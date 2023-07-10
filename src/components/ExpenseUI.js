@@ -14,11 +14,45 @@ function ExpenseUI(){
 
     const [expenseList, setExpenseList] = useState("");
 
+    let _userdata = localStorage.getItem("user_data");
+
+    let userdata = JSON.parse(_userdata);
+
+    let userId = userdata.id;
+
+    let firstName = userdata.firstName;
+
+    let lastName = userdata.lastName;
+
     const addExpense = async event =>{
 
         event.preventDefault();
 
-        alert("add");
+        let obj = {userId:userId, expense:[expenseName.value, expenseCost.value]};
+
+        let jsonObj = JSON.stringify(obj);
+
+        try{
+
+            const response = await fetch(
+                "http://localhost:5000/api/addexpense",
+                {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
+            );
+
+            let text = await response.text();
+            let res = JSON.parse(text);
+
+            if(res.error.length > 0){
+                setMessage("API Error:" + res.error);
+            }
+            else{
+                setMessage("Expense Added");
+            }
+
+        }
+        catch(e){
+            setMessage(e.toString());
+        }
 
     }
 
@@ -26,9 +60,35 @@ function ExpenseUI(){
         
         event.preventDefault();
         
-        alert("search");
+        let obj = {userId: userId, query: search.value};
     
-    }
+        let jsonObj = JSON.stringify(obj);
+
+        try{
+            const response = await fetch(
+                "http://localhost:5000/api/searchexpense",
+                {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
+            );
+
+            let text = await response.text();
+            let res = JSON.parse(text);
+            let _results = res.results;
+            let resultText = "";
+            for(var i = 0; i < _results.length; i++){
+                resultText += _results[i];
+                if(i < _results.length - 1){
+                    resultText += ", ";
+                }
+            }
+            setResults("Search Complete.")
+            setExpenseList(resultText);
+        }
+        catch(e){
+            alert(e.toString());
+            setResults(e.toString());
+        }
+
+    };
 
     return(
         <div id="budgetUIDiv">
@@ -36,8 +96,8 @@ function ExpenseUI(){
             <input type="text" id="searchText" placeholder="Expense To Search For" ref={(c) => search = c}></input>
             <button type="button" id="searchExpenseButton" class="buttons" onClick={searchExpense}>Search</button>
             <br/>
-            <span id="expenseSearchResult"></span>
-            <p id="expenseList"></p>
+            <span id="expenseSearchResult">{searchResults}</span>
+            <p id="expenseList">{expenseList}</p>
             <br/>
             <br/>
             <input type="text" id="expenseName" placeholder="Expense To Add" ref={(c) => expenseName = c}></input>
