@@ -4,6 +4,21 @@ import Button from 'react-bootstrap/Button';
 
 function Register(){
 
+    const app_name = "budget-manager-group14-bacfc735e9a2";
+    function buildPath(route)
+    {
+
+        if(process.env.NODE_ENV === "production")
+        {
+            return("https://" + app_name + ".herokuapp.com/" + route);
+        }
+        else
+        {
+            return "http://localhost:5000/" + route;
+        }
+
+    }
+
     var registerEmail, registerFirstName, registerLastName, registerPassword;
 
     const[message, setMessage] = useState("");
@@ -12,14 +27,14 @@ function Register(){
 
         event.preventDefault();
 
-        var obj = {email: registerEmail.value, firstName: registerFirstName.value, lastName: registerLastName.value, password: registerPassword.value};
+        var obj = {email: registerEmail.value, password: registerPassword.value, firstName: registerFirstName.value, lastName: registerLastName.value};
 
         var jsonObj = JSON.stringify(obj); 
 
         try{
 
             const response = await fetch(
-                "http://localhost:5000/api/register", 
+                buildPath("api/register"), 
                 {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
             );
 

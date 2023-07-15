@@ -27,7 +27,7 @@ function Login(){
 
         event.preventDefault();
 
-        var obj = {login: loginEmail.value, password: loginPassword.value};
+        var obj = {email: loginEmail.value, password: loginPassword.value};
 
         var jsonObj = JSON.stringify(obj); 
 

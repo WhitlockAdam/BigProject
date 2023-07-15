@@ -6,25 +6,28 @@ const path = require("path");
 const PORT = process.env.PORT || 5000;
 
 const app = express();
-app.set("port", (process.env.PORT||5000));
-app.use(bodyParser.json());
 app.use(cors());
+app.use(bodyParser.json());
+
+
 
 
 app.use((req, res, next) =>{
 
-    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+        'Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept, Authorization'
     );
     res.setHeader(
-        "Access-Control-Allow-Methods",
-        "GET, POST, PATCH, DELETE, OPTIONS"
+        'Access-Control-Allow-Methods',
+        'GET, POST, PATCH, DELETE, OPTIONS'
     );
     next();
 
 });
+
+app.set("port", (process.env.PORT||5000));
 
 if (process.env.NODE_ENV === 'production')
 {
@@ -41,13 +44,44 @@ const MongoClient = require("mongodb").MongoClient;
 const client = new MongoClient(url);
 client.connect(console.log("connected"));
 
-const server = app.listen(process.env.PORT || 5000, () => 
-{
-    const port = server.address.port();
-    console.log(`Server listening on port ${port}`);
-});
+app.listen(PORT);
 
 var expenseList = [];
+
+app.post('/api/login', async (req, res, next) =>{
+
+    var error = "";
+    const { email, password } = req.body;
+    const db = client.db("BuccaneerBudgeting");
+    const results = await db.collection("Users").find({email: email, password: password}).toArray();
+    var id = -1;
+    var firstName = '';
+    var lastName = '';
+    if(0 < results.length){
+        id = results[0]._id;
+        firstName = results[0].firstName;
+        lastName = results[0].lastName;
+    }
+    
+    var ret = { id: id, firstName: firstName, lastName: lastName, error: ""};
+    res.status(200).json(ret);
+
+});
+
+app.post('/api/register', async (req, res, next) =>{
+
+    var error = "";
+    const { email, password, firstName, lastName } = req.body;
+    const db = client.db("BuccaneerBudgeting");
+    await db.collection("Users").insertOne({email: email, password: password, firstName: firstName, lastName: lastName});
+    const results = await db.collection("Users").find({email: email, password: password}).toArray();
+    if(0 < results.length){
+        id = results[0]._id;
+    }
+    var ret = {id: id, firstName: firstName, lastName: lastName, error: ""};
+    res.status(200).json(ret);
+
+});
 
 app.post('/api/addexpense', async (req, res, next) =>{
 
@@ -75,25 +109,6 @@ app.post('/api/addexpense', async (req, res, next) =>{
     var ret = {error: error};
     res.status(200).json(ret);
 
-});
-
-app.post('/api/login', async (req, res, next) =>{
-
-    var error = "";
-    const { email, password } = req.body;
-    const db = client.db("BuccaneerBudgeting");
-    const results = await db.collection("Users").find({Email: email, Password: password}).toArray();
-    var id = -1;
-    var firstName = '';
-    var lastName = '';
-    if(0 < results.length){
-        id = results[0].id;
-        firstName = results[0].firstName;
-        lastName = results[0].lastName; 
-        alert("empty")
-    }
-    var ret = { id:id, firstName:firstName, lastName:lastName, error:"bruh"};
-    res.status(200).json(ret);
 });
 
 app.post('/api/searchexpense', async (req, res, next) =>{
