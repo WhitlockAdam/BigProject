@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 function ExpenseUI(){
     
-    const app_name = "budget-manager-group14";
+    const app_name = "budget-manager-group14-bacfc735e9a2";
     function buildPath(route)
     {
 

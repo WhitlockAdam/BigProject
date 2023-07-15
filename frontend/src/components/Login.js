@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 
 function Login(){
 
-    const app_name = "budget-manager-group14";
+    const app_name = "budget-manager-group14-bacfc735e9a2";
     function buildPath(route)
     {
 
