@@ -40,7 +40,7 @@ const MongoClient = require("mongodb").MongoClient;
 const client = new MongoClient(url);
 client.connect(console.log("connected"));
 
-app.listen(PORT, () => {console.log("Server listening on port " + PORT)});
+app.listen(process.env.PORT || 5000, () => {console.log("Server listening on port " + PORT)});
 
 var expenseList = [];
 
