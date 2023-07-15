@@ -21,7 +21,13 @@ function ExpenseUI(){
     
     var expenseCost = "";
 
-    var search = "";
+    var expenseDate = "";
+
+    var searchName = "";
+
+    var searchCost = "";
+
+    var searchDate = "";
 
     const [message, setMessage] = useState("");
 
@@ -35,15 +41,11 @@ function ExpenseUI(){
 
     let userId = userdata.id;
 
-    let firstName = userdata.firstName;
-
-    let lastName = userdata.lastName;
-
     const addExpense = async event =>{
 
         event.preventDefault();
 
-        let obj = {userId:userId, expense:[expenseName.value, expenseCost.value]};
+        let obj = {userId:userId, name: expenseName.value, cost: expenseCost.value, date: expenseDate.value};
 
         let jsonObj = JSON.stringify(obj);
 
@@ -75,7 +77,7 @@ function ExpenseUI(){
         
         event.preventDefault();
         
-        let obj = {userId: userId, query: search.value};
+        let obj = {userId: userId, query: searchName.value};
     
         let jsonObj = JSON.stringify(obj);
 
@@ -108,15 +110,18 @@ function ExpenseUI(){
     return(
         <div id="budgetUIDiv">
             <br/>
-            <input type="text" id="searchText" placeholder="Expense To Search For" ref={(c) => search = c}></input>
+            <input type="text" id="searchName" placeholder="Name" ref={(c) => searchName = c}></input>
+            <input type="text" id="searchCost" placeholder="Cost" ref={(c) => searchCost = c}></input>
+            <input type="date" id="searchDate" ref={(c) => searchDate = c}></input>
             <button type="button" id="searchExpenseButton" class="buttons" onClick={searchExpense}>Search</button>
             <br/>
             <span id="expenseSearchResult">{searchResults}</span>
             <p id="expenseList">{expenseList}</p>
             <br/>
             <br/>
-            <input type="text" id="expenseName" placeholder="Expense To Add" ref={(c) => expenseName = c}></input>
+            <input type="text" id="expenseName" placeholder="Name" ref={(c) => expenseName = c}></input>
             <input type="number" id="expenseCost" placeholder="Cost" ref={(c) => expenseCost = c}></input>
+            <input type="date" id="expenseDate" ref={(c) => expenseDate = c}></input>
             <button type="button" id="addExpenseButton" class="buttons" onClick={addExpense}>Add</button>
             <br/>
             <span id="expenseAddResult">{message}</span>

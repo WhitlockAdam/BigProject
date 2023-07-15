@@ -9,9 +9,6 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-
-
-
 app.use((req, res, next) =>{
 
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -87,13 +84,13 @@ app.post('/api/addexpense', async (req, res, next) =>{
 
     var error = "";
 
-    const {userId, expense} = req.body;
-    const newExpense = {Expense: expense, UserId: userId}
+    const {userId, name, cost, date} = req.body;
+    const newExpense = {userId: userId, name: name, cost: cost, date: date}
 
     try{
 
         const db = client.db("BuccaneerBudgeting");
-        const result = db.collection("expenses").insertOne(newExpense);
+        db.collection("Expenses").insertOne(newExpense);
 
     }
     catch(e){
@@ -104,11 +101,6 @@ app.post('/api/addexpense', async (req, res, next) =>{
 
     res.status(200).json(ret);
 
-    expenseList.push(expense);
-
-    var ret = {error: error};
-    res.status(200).json(ret);
-
 });
 
 app.post('/api/searchexpense', async (req, res, next) =>{
@@ -116,14 +108,15 @@ app.post('/api/searchexpense', async (req, res, next) =>{
     const { userId, query } = req.body;
     var _search = query.trim();
     const db = client.db("BuccaneerBudgeting");
-    const results = await db.collection("expenses").find({"Name":{$regex:_search+".*",$options:"i"}}).toArray();
+    const results = await db.collection("Expenses").find({"userId":userId}).toArray();
+    //"name":{$regex:_search+".*",$options:"i"}
     var _ret = [];
-    for( var i=0; i<expenseList.length; i++ )
+    for( var i=0; i<results.length; i++ )
     {
-        var lowerFromList = expenseList[i][0].toLocaleLowerCase();
+        var lowerFromList = results[i].name.toLocaleLowerCase();
         if( lowerFromList.indexOf( _search ) >= 0 )
         {
-            _ret.push( results[i].Name );
+            _ret.push(results[i].name);
         }
     }
     var ret = {results:_ret, error:''};
