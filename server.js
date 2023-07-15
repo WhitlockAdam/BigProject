@@ -7,8 +7,9 @@ const PORT = process.env.PORT || 5000;
 
 const app = express();
 app.set("port", (process.env.PORT||5000));
-app.use(cors());
 app.use(bodyParser.json());
+app.use(cors());
+
 
 app.use((req, res, next) =>{
 
