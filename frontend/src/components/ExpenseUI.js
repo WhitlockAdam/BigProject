@@ -34,7 +34,7 @@ function ExpenseUI(){
 
     const [searchResults, setResults] = useState("");
 
-    const [expenseList, setExpenseList] = useState("");
+    const [expenseList, setExpenseList] = useState([]);
 
     let _userdata = localStorage.getItem("user_data");
 
