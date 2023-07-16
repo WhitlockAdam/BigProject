@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Table from 'react-bootstrap/Table';
 
 function ExpenseUI(){
     
@@ -90,15 +91,12 @@ function ExpenseUI(){
             let text = await response.text();
             let res = JSON.parse(text);
             let _results = res.results;
-            let resultText = "";
+            let resultList = [];
             for(var i = 0; i < _results.length; i++){
-                resultText += _results[i];
-                if(i < _results.length - 1){
-                    resultText += ", ";
-                }
+                resultList.push({name: _results[i].name, cost: _results[i].cost, date: _results[i].date});
             }
             setResults("Search Complete.")
-            setExpenseList(resultText);
+            setExpenseList(resultList);
         }
         catch(e){
             alert(e.toString());
@@ -116,7 +114,24 @@ function ExpenseUI(){
             <button type="button" id="searchExpenseButton" class="buttons" onClick={searchExpense}>Search</button>
             <br/>
             <span id="expenseSearchResult">{searchResults}</span>
-            <p id="expenseList">{expenseList}</p>
+            <Table id="expenseList">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Cost</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {expenseList.map((r) =>
+                        <tr>
+                            <td>{r.name}</td>
+                            <td>{r.cost}</td>
+                            <td>{r.date}</td>
+                        </tr>
+                    )}
+                </tbody>
+            </Table>
             <br/>
             <br/>
             <input type="text" id="expenseName" placeholder="Name" ref={(c) => expenseName = c}></input>

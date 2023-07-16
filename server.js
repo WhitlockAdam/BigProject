@@ -108,7 +108,7 @@ app.post('/api/searchexpense', async (req, res, next) =>{
     const { userId, query } = req.body;
     var _search = query.trim();
     const db = client.db("BuccaneerBudgeting");
-    const results = await db.collection("Expenses").find({"userId":userId}).toArray();
+    const results = await db.collection("Expenses").find({"userId":userId, "name":{$regex:_search+".*",$options:"i"}}).toArray();
     //"name":{$regex:_search+".*",$options:"i"}
     var _ret = [];
     for( var i=0; i<results.length; i++ )
@@ -116,7 +116,7 @@ app.post('/api/searchexpense', async (req, res, next) =>{
         var lowerFromList = results[i].name.toLocaleLowerCase();
         if( lowerFromList.indexOf( _search ) >= 0 )
         {
-            _ret.push(results[i].name);
+            _ret.push({name: results[i].name, cost: results[i].cost, date: results[i].date});
         }
     }
     var ret = {results:_ret, error:''};
