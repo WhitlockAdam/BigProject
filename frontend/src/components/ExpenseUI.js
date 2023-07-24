@@ -93,7 +93,7 @@ function ExpenseUI(){
             let _results = res.results;
             let resultList = [];
             for(var i = 0; i < _results.length; i++){
-                resultList.push({name: _results[i].name, cost: _results[i].cost, date: _results[i].date});
+                resultList.push({name: _results[i].name, cost: _results[i].cost, date: _results[i].date, objectid: _results[i].objectid});
             }
             setResults("Search Complete.")
             setExpenseList(resultList);

@@ -116,9 +116,19 @@ app.post('/api/searchexpense', async (req, res, next) =>{
         var lowerFromList = results[i].name.toLocaleLowerCase();
         if( lowerFromList.indexOf( _search ) >= 0 )
         {
-            _ret.push({name: results[i].name, cost: results[i].cost, date: results[i].date});
+            _ret.push({name: results[i].name, cost: results[i].cost, date: results[i].date, objectid: results._id});
         }
     }
+    var ret = {results:_ret, error:''};
+    res.status(200).json(ret);
+});
+
+app.post('/api/deleteexpense', async (req, res, next) =>{
+    var error = "";
+    const { userId, query } = req.body;
+    var _search = query.trim();
+    const db = client.db("BuccaneerBudgeting");
+    const results = await db.collection("Expenses").deleteOne({"userId":userId, "_id": query.objectid}).toArray();
     var ret = {results:_ret, error:''};
     res.status(200).json(ret);
 });
