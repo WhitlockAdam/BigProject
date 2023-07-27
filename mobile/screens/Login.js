@@ -75,6 +75,7 @@ function Login({navigation})
                 
                 setMessage(res.error)
                 console.log(res.id);
+                console.log(obj.password);
             }
 
             else{
