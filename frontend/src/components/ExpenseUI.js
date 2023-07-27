@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Table from 'react-bootstrap/Table';
+import ToggleButton from 'react-bootstrap/ToggleButton';
 
 function ExpenseUI(){
     
@@ -30,7 +31,9 @@ function ExpenseUI(){
 
     var searchDate = "";
 
-    const [message, setMessage] = useState("");
+    const [deleteList, setDeleteList] = useState([]);
+
+    const [message, setMessage] = useState(""); 
 
     const [searchResults, setResults] = useState("");
 
@@ -92,10 +95,11 @@ function ExpenseUI(){
             let res = JSON.parse(text);
             let _results = res.results;
             let resultList = [];
+            let dictionary = [];
             for(var i = 0; i < _results.length; i++){
-                resultList.push({name: _results[i].name, cost: _results[i].cost, date: _results[i].date, objectid: _results[i].objectid});
+                resultList.push({name: _results[i].name, cost: _results[i].cost, date: _results[i].date, _id: _results[i]._id, selected: false});
             }
-            setResults("Search Complete.")
+            setResults("Search Complete.");
             setExpenseList(resultList);
         }
         catch(e){
@@ -104,6 +108,36 @@ function ExpenseUI(){
         }
 
     };
+
+    const deleteExpense = async event => {
+
+        event.preventDefault();
+
+        deleteList.forEach(async element => {
+
+            let obj = {userId: userId, query: element};
+    
+            let jsonObj = JSON.stringify(obj);
+
+            try{
+                const response = await fetch(
+                    buildPath("api/deleteexpense"),
+                    {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
+                );
+
+                let text = await response.text();
+
+                setDeleteList([]);
+
+            }
+            catch(e){
+                alert(e.toString());
+                setResults(e.toString());
+            }
+
+        });
+
+    }
 
     return(
         <div id="budgetUIDiv">
@@ -124,10 +158,12 @@ function ExpenseUI(){
                 </thead>
                 <tbody>
                     {expenseList.map((r) =>
-                        <tr>
+                        <tr key={r._id}>
                             <td>{r.name}</td>
                             <td>{r.cost}</td>
                             <td>{r.date}</td>
+                            <td style={{visibility: 'hidden'}}>{r._id}</td>
+                            <td><ToggleButton className='mb-2' type="checkbox" variant="outline-primary" checked={r.bool} onClick={() => {deleteList.indexOf(r._id)===-1 ? setDeleteList((prev)=>[...prev, r._id]) : deleteList.splice(deleteList.indexOf(r._id), 1); setExpenseList(expenseList.map((element)=>element._id===r._id?{...element, bool: !element.bool} : {...element}));}}>Delete</ToggleButton></td>
                         </tr>
                     )}
                 </tbody>
@@ -140,6 +176,8 @@ function ExpenseUI(){
             <button type="button" id="addExpenseButton" class="buttons" onClick={addExpense}>Add</button>
             <br/>
             <span id="expenseAddResult">{message}</span>
+            <br/>
+            <button onClick={deleteExpense}>Delete</button>
         </div>
     );
     
