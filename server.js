@@ -38,6 +38,7 @@ if (process.env.NODE_ENV === 'production')
 require("dotenv").config();
 const url = process.env.MONGODB_URI;
 const MongoClient = require("mongodb").MongoClient;
+const ObjectId = require("mongodb").ObjectId;
 const client = new MongoClient(url);
 client.connect(console.log("connected"));
 
@@ -116,7 +117,7 @@ app.post('/api/searchexpense', async (req, res, next) =>{
         var lowerFromList = results[i].name.toLocaleLowerCase();
         if( lowerFromList.indexOf( _search ) >= 0 )
         {
-            _ret.push({name: results[i].name, cost: results[i].cost, date: results[i].date, objectid: results._id});
+            _ret.push({name: results[i].name, cost: results[i].cost, date: results[i].date, _id: results[i]._id});
         }
     }
     var ret = {results:_ret, error:''};
@@ -126,9 +127,8 @@ app.post('/api/searchexpense', async (req, res, next) =>{
 app.post('/api/deleteexpense', async (req, res, next) =>{
     var error = "";
     const { userId, query } = req.body;
-    var _search = query.trim();
     const db = client.db("BuccaneerBudgeting");
-    const results = await db.collection("Expenses").deleteOne({"userId":userId, "_id": query.objectid}).toArray();
-    var ret = {results:_ret, error:''};
+    await db.collection("Expenses").deleteOne({"userId": userId, "_id": new ObjectId(query)});
+    var ret = {error:''};
     res.status(200).json(ret);
 });
