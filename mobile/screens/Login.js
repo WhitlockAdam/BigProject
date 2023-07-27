@@ -65,8 +65,8 @@ function Login({navigation})
         try{
 
             const response = await fetch(
-                //buildPath("api/login"), 
-                'https://budget-manager-group14-bacfc735e9a2.herokuapp.com/api/login',
+                buildPath("api/login"), 
+                //'https://budget-manager-group14-bacfc735e9a2.herokuapp.com/api/login',
                 {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
             );
 
