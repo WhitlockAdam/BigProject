@@ -16,6 +16,7 @@ function Login({navigation})
       onChangeText = {LoginInputHandler
         <TextInput style = {styles.textInput} placeholder='Login' value = {loginEmail} />
         onPress={() => navigation.navigate('Expenses')}
+                //<Text>{message}</Text>
   };*/
 
     function startAddGoalHandler(){
@@ -43,9 +44,9 @@ function Login({navigation})
         }
         else
         {
-            //return "https://localhost:5000/" + route;
+            "https://localhost:5000/" + route;
         }
-        return("https://" + app_name + ".herokuapp.com/" + route);
+        //return("https://" + app_name + ".herokuapp.com/" + route);
 
     }
 
@@ -112,12 +113,11 @@ function Login({navigation})
           <TextInput style = {styles.textInput} placeholder='Login' ref={(c) => loginEmail = c} />
           <TextInput style = {styles.textInput} placeholder='Password' ref={(c) => loginPassword = c}/>
           <View style = {styles.button}>
-            <Button type = "submit" title = "Login" onPress={doLogin} />
+            <Button title = "Login" onPress={doLogin} />
             <Button title = "Register" onPress={startAddGoalHandler}/>
             <Register visible = {modalIsVisible}  onCancel ={endAddGoalHandler}/>
           </View>
         </View>
-        <Text>{message}</Text>
       </View>
     );
 }
