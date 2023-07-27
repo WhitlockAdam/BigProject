@@ -74,7 +74,7 @@ function Login({navigation})
             if(res.id <= 0){
                 
                 setMessage(res.error)
-                console.log(ref.id);
+                console.log(res.id);
             }
 
             else{
