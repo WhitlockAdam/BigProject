@@ -44,7 +44,6 @@ function Login({navigation})
         else
         {
             //return "https://localhost:5000/" + route;
-            //return 'https://10.127.28.104:5000/' + route;
         }
         return("https://" + app_name + ".herokuapp.com/" + route);
 
@@ -75,7 +74,7 @@ function Login({navigation})
             if(res.id <= 0){
                 
                 setMessage(res.error)
-                console.log('dong');
+                console.log(ref.id);
             }
 
             else{
