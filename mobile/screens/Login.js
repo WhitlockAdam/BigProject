@@ -8,7 +8,8 @@ import Register from '../components/Register'
 function Login({navigation})
 {
     const [modalIsVisible, setModalIsVisible] = useState(false);
-    const [enteredLoginText, setEnteredLoginText] = useState('');
+    const [loginEmail, setLoginEmail] = useState('');
+    const [loginPassword, setLoginPassword] = useState('');
     const [pageDetector, setPageDectector] = useState(false);
 
     /*function LoginInputHandler(loginEmail) {
@@ -17,6 +18,10 @@ function Login({navigation})
         <TextInput style = {styles.textInput} placeholder='Login' value = {loginEmail} />
         onPress={() => navigation.navigate('Expenses')}
                 //<Text>{message}</Text>
+                <TextInput style = {styles.textInput} placeholder='Login' ref={(c) => loginEmail = c} />
+          <TextInput style = {styles.textInput} placeholder='Password' ref={(c) => loginPassword = c}/>
+          <TextInput style = {styles.textInput} placeholder='Login' onChangeText= {(text => this.setState({loginEmail: text}))} value={this.state.loginEmail} />
+          <TextInput style = {styles.textInput} placeholder='Password' onChangeText= {(text => this.setState({loginPassword: text}))} value={this.state.loginPassword}/>
   };*/
 
     function startAddGoalHandler(){
@@ -27,6 +32,17 @@ function Login({navigation})
       setModalIsVisible(false);
     }
   
+    function emailInputHandler(enteredLoginEmail)
+    {
+      setLoginEmail(enteredLoginEmail);
+    }
+
+    function passwordInputHandler(enteredLoginPassword)
+    {
+      setLoginPassword(enteredLoginPassword);
+    }
+
+
     function pageSwitcher()
     {
       setPageDectector(true);
@@ -50,7 +66,7 @@ function Login({navigation})
 
     }
 
-    var loginEmail, loginPassword;
+    //var loginEmail, loginPassword;
 
     const[message, setMessage] = useState("");
 
@@ -58,15 +74,17 @@ function Login({navigation})
 
         event.preventDefault();
 
-        var obj = {email: loginEmail.value, password: loginPassword.value};
+        console.log(loginEmail);
+        var obj = {email: loginEmail, password: loginPassword};
+        //var obj = {email: 'test@gmail.com', password: 'test'};
 
         var jsonObj = JSON.stringify(obj); 
 
         try{
 
             const response = await fetch(
-                buildPath("api/login"), 
-                //'https://budget-manager-group14-bacfc735e9a2.herokuapp.com/api/login',
+                //buildPath("api/login"), 
+                'https://budget-manager-group14-bacfc735e9a2.herokuapp.com/api/login',
                 {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
             );
 
@@ -75,21 +93,19 @@ function Login({navigation})
             if(res.id <= 0){
                 
                 setMessage(res.error)
-                console.log(res.id);
-                console.log(obj.password);
             }
 
             else{
                 
                 var user = {firstName:res.firstName, lastName:res.lastName, id:res.id};
 
-                localStorage.setItem("user_data", JSON.stringify(user));
+                //slocalStorage.setItem("user_data", JSON.stringify(user));
 
                 setMessage("");
 
                 console.log('ding');
 
-                this.navigation.navigate('Expenses');
+                navigation.navigate('Expenses');
 
             }
 
@@ -110,8 +126,8 @@ function Login({navigation})
       <View style ={styles.container}>
         <View style = {styles.top} />
         <View style ={styles.loginContainer}>
-          <TextInput style = {styles.textInput} placeholder='Login' ref={(c) => loginEmail = c} />
-          <TextInput style = {styles.textInput} placeholder='Password' ref={(c) => loginPassword = c}/>
+          <TextInput style = {styles.textInput} placeholder='Login' onChangeText = {emailInputHandler} value = {loginEmail}/>
+          <TextInput style = {styles.textInput} placeholder='Password' onChangeText = {passwordInputHandler} value =  {loginPassword}/>
           <View style = {styles.button}>
             <Button title = "Login" onPress={doLogin} />
             <Button title = "Register" onPress={startAddGoalHandler}/>
