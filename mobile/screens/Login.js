@@ -3,13 +3,13 @@ import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import React from 'react';
-import Register from '../components/Register'
+//import Register from '../components/Register'
 function Login({navigation})
 {
-    const [modalIsVisible, setModalIsVisible] = useState(false);
+   // const [modalIsVisible, setModalIsVisible] = useState(false);
     const [loginEmail, setLoginEmail] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
-    const [pageDetector, setPageDectector] = useState(false);
+   // const [pageDetector, setPageDectector] = useState(false);
 
     /*function LoginInputHandler(loginEmail) {
       setEnteredLoginText(loginEmail);
@@ -21,15 +21,18 @@ function Login({navigation})
           <TextInput style = {styles.textInput} placeholder='Password' ref={(c) => loginPassword = c}/>
           <TextInput style = {styles.textInput} placeholder='Login' onChangeText= {(text => this.setState({loginEmail: text}))} value={this.state.loginEmail} />
           <TextInput style = {styles.textInput} placeholder='Password' onChangeText= {(text => this.setState({loginPassword: text}))} value={this.state.loginPassword}/>
+
+          <Button title = "Register" onPress={startAddGoalHandler}/>
+          <Register visible = {modalIsVisible}  onCancel ={endAddGoalHandler}/>
   };*/
 
-    function startAddGoalHandler(){
+   /* function startAddGoalHandler(){
       setModalIsVisible(true);
     }
   
     function endAddGoalHandler(){
       setModalIsVisible(false);
-    }
+    }*/
   
     function emailInputHandler(enteredLoginEmail)
     {
@@ -126,8 +129,7 @@ function Login({navigation})
           <TextInput style = {styles.textInput} placeholder='Password' onChangeText = {passwordInputHandler} value =  {loginPassword}/>
           <View style = {styles.button}>
             <Button title = "Login" onPress={doLogin} />
-            <Button title = "Register" onPress={startAddGoalHandler}/>
-            <Register visible = {modalIsVisible}  onCancel ={endAddGoalHandler}/>
+            <Button title = "Register" onPress= {() => navigation.navigate('Register')}/>
           </View>
         </View>
       </View>

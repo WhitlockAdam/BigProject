@@ -1,9 +1,9 @@
-import {StyleSheet, View, Button, TextInput, Modal, Image} from 'react-native';
+import {StyleSheet, View, Button, TextInput} from 'react-native';
 import { useState } from 'react';
 
 
 
-function Register(props, {navigation})
+function Register({navigation})
 {
 
     const [registerEmail, setRegisterEmail] = useState('');
@@ -37,10 +37,9 @@ function Register(props, {navigation})
 
         event.preventDefault();
 
-        var obj = {email: registerEmail.value, password: registerPassword.value, firstName: registerFirstName.value, lastName: registerLastName.value};
+        var obj = {email: registerEmail, password: registerPassword, firstName: registerFirstName, lastName: registerLastName};
 
         var jsonObj = JSON.stringify(obj); 
-
         try{
 
             const response = await fetch(
@@ -80,7 +79,6 @@ function Register(props, {navigation})
     };
 
     return(
-        <Modal visible = {props.visible} animationType="slide">
             <View style = {styles.registerContainer}>
             <TextInput style = {styles.textInput} placeholder='Email' onChangeText = {emailInputHandler} value = {registerEmail} color = "#f31282"/>
             <TextInput style = {styles.textInput} placeholder='First Name' onChangeText = {firstNameInputHandler} value = {registerFirstName} color = "#f31282"/>
@@ -89,14 +87,13 @@ function Register(props, {navigation})
 
                 <View style = {styles.buttonContainer}>
                     <View style = {styles.button}>
-                        <Button title = "Cancel" onPress = {props.onCancel} color = "#f31282"/>
+                        <Button title = "Cancel" onPress = {() => navigation.goBack(null)}  color = "#f31282"/>
                     </View>
                     <View style = {styles.button}>
                         <Button title = "Register" color = "#f31282" onPress = {doRegister}/>
                     </View>
                 </View>
             </View>
-        </Modal>
     );
 }
 
