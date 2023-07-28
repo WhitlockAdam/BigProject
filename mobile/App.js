@@ -4,6 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import Login from './screens/Login'
 import Expenses from './screens/Expenses'
+import Register from './components/Register'
 
 
 /*function HomeScreen() 

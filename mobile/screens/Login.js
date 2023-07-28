@@ -3,8 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import React from 'react';
-//import Register from '../components/Register'
-import Register from 'Register'
+import Register from '../components/Register'
 function Login({navigation})
 {
     const [modalIsVisible, setModalIsVisible] = useState(false);
