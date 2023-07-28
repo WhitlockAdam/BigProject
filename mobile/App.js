@@ -28,6 +28,13 @@ const App = () => {
           options={{title: '', headerShown: false}}
         />
         <Stack.Screen name="Expenses" component={Expenses} />
+        <Stack.Group screenOptions={{presentation: "modal"}}>
+        <Stack.Screen
+          name="Register"
+          component={Register}
+          options={{title: '', headerShown: false}}
+        />
+        </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>
   );

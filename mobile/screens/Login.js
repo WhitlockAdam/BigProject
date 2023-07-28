@@ -3,8 +3,8 @@ import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import React from 'react';
-
-import Register from '../components/Register'
+//import Register from '../components/Register'
+import Register from 'Register'
 function Login({navigation})
 {
     const [modalIsVisible, setModalIsVisible] = useState(false);
@@ -74,7 +74,6 @@ function Login({navigation})
 
         event.preventDefault();
 
-        console.log(loginEmail);
         var obj = {email: loginEmail, password: loginPassword};
         //var obj = {email: 'test@gmail.com', password: 'test'};
 
@@ -102,8 +101,6 @@ function Login({navigation})
                 //slocalStorage.setItem("user_data", JSON.stringify(user));
 
                 setMessage("");
-
-                console.log('ding');
 
                 navigation.navigate('Expenses');
 
