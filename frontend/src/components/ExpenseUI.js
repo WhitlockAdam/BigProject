@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import ToggleButton from 'react-bootstrap/ToggleButton';
+import Button from 'react-bootstrap/Button';
 
 function ExpenseUI(){
     
@@ -43,13 +44,13 @@ function ExpenseUI(){
 
     let userdata = JSON.parse(_userdata);
 
-    let userId = userdata.id;
+    let _id = userdata._id;
 
     const addExpense = async event =>{
 
         event.preventDefault();
 
-        let obj = {userId:userId, name: expenseName.value, cost: expenseCost.value, date: expenseDate.value};
+        let obj = {userId:_id, name: expenseName.value, cost: expenseCost.value, date: expenseDate.value};
 
         let jsonObj = JSON.stringify(obj);
 
@@ -81,7 +82,7 @@ function ExpenseUI(){
         
         event.preventDefault();
         
-        let obj = {userId: userId, query: searchName.value};
+        let obj = {userId: _id, queryName: searchName.value, queryCost: searchCost.value, queryDate: searchDate.value};
     
         let jsonObj = JSON.stringify(obj);
 
@@ -95,7 +96,6 @@ function ExpenseUI(){
             let res = JSON.parse(text);
             let _results = res.results;
             let resultList = [];
-            let dictionary = [];
             for(var i = 0; i < _results.length; i++){
                 resultList.push({name: _results[i].name, cost: _results[i].cost, date: _results[i].date, _id: _results[i]._id, selected: false});
             }
@@ -115,7 +115,7 @@ function ExpenseUI(){
 
         deleteList.forEach(async element => {
 
-            let obj = {userId: userId, query: element};
+            let obj = {userId: _id, query: element};
     
             let jsonObj = JSON.stringify(obj);
 
@@ -177,7 +177,7 @@ function ExpenseUI(){
             <br/>
             <span id="expenseAddResult">{message}</span>
             <br/>
-            <button onClick={deleteExpense}>Delete</button>
+            <Button onClick={deleteExpense}>Delete</Button>
         </div>
     );
     

@@ -1,5 +1,5 @@
 import React from "react";
-import PageTitle from "../components/PageTitle";
+import NavigationBar from "../components/NavigationBar";
 import Register from "../components/Register";
 
 const RegisterPage = () =>
@@ -7,7 +7,7 @@ const RegisterPage = () =>
 
     return(
         <div>
-            <PageTitle/>
+            <NavigationBar/>
             <Register/>
         </div>
     );

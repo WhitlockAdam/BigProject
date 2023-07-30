@@ -40,7 +40,7 @@ function Login(){
 
             var res = JSON.parse(await response.text());
 
-            if(res.id <= 0){
+            if(res.error !== ""){
                 
                 setMessage(res.error)
             
@@ -48,7 +48,7 @@ function Login(){
 
             else{
                 
-                var user = {firstName:res.firstName, lastName:res.lastName, id:res.id};
+                var user = {firstName: res.firstName, lastName: res.lastName, _id: res._id, email: res.email};
 
                 localStorage.setItem("user_data", JSON.stringify(user));
 
@@ -82,6 +82,8 @@ function Login(){
                 </Form.Group>
                 <Button type="submit">Submit</Button>
             </Form>
+            <br/>
+            <Button onClick={() => window.location.href = "/resetpassword"}>Reset Password</Button> 
             <span id="loginResult">{message}</span>
         </div>
     );

@@ -40,21 +40,17 @@ function Register(){
 
             var res = JSON.parse(await response.text());
 
-            if(res.id <= 0){
+            if(res.error !== ""){
                 
-                setMessage("Failed to register.")
+                setMessage(res.error)
             
             }
 
             else{
-                
-                var user = {firstName:res.firstName, lastName:res.lastName, id:res.id};
-
-                localStorage.setItem("user_data", JSON.stringify(user));
 
                 setMessage("");
 
-                window.location.href="/expenses";
+                window.location.href="/activate";
 
             }
 
