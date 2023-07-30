@@ -38,7 +38,6 @@ if (process.env.NODE_ENV === 'production')
 require("dotenv").config();
 const url = process.env.MONGODB_URI;
 const MongoClient = require("mongodb").MongoClient;
-const ObjectId = require("mongodb").ObjectId;
 const client = new MongoClient(url);
 client.connect(console.log("connected"));
 
@@ -46,8 +45,11 @@ app.listen(PORT);
 
 const sgMail = require('@sendgrid/mail');
 const { verify } = require('crypto');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+var api = require('./api.js');
+api.setApp(app, client);
 
+/*
 app.post('/api/login', async (req, res, next) =>{
 
     var error = "";
@@ -260,13 +262,7 @@ app.post('/api/searchexpense', async (req, res, next) =>{
     for( var i=0; i<results.length; i++ )
     {
         _ret.push({name: results[i].name, cost: results[i].cost, date: results[i].date, _id: results[i]._id});
-        /*
-        var lowerFromList = results[i].name.toLocaleLowerCase();
-        if( lowerFromList.indexOf( _search ) >= 0 )
-        {
-            _ret.push({name: results[i].name, cost: results[i].cost, date: results[i].date, _id: results[i]._id});
-        }
-        */
+        
     }
     var ret = {results:_ret, error:''};
     res.status(200).json(ret);
@@ -280,3 +276,4 @@ app.post('/api/deleteexpense', async (req, res, next) =>{
     var ret = {error:''};
     res.status(200).json(ret);
 });
+*/

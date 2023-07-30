@@ -4,6 +4,9 @@ import Button from 'react-bootstrap/Button';
 
 function Activate(){
     
+    var bp = require('./Path.js');
+
+    /*
     const app_name = "budget-manager-group14-bacfc735e9a2";
     function buildPath(route)
     {
@@ -18,6 +21,7 @@ function Activate(){
         }
 
     }
+    */
 
     var email, verificationCode;
 
@@ -34,7 +38,7 @@ function Activate(){
         try{
 
             const response = await fetch(
-                buildPath("api/verify"), 
+                bp.buildPath("api/verify"), 
                 {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
             );
 

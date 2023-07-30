@@ -4,6 +4,9 @@ import Button from 'react-bootstrap/Button';
 
 function SendResetPasswordEmail(){
     
+    var bp = require('./Path.js');
+
+    /*
     const app_name = "budget-manager-group14-bacfc735e9a2";
     function buildPath(route)
     {
@@ -18,6 +21,7 @@ function SendResetPasswordEmail(){
         }
 
     }
+    */
 
     var email;
 
@@ -34,7 +38,7 @@ function SendResetPasswordEmail(){
         try{
 
             const response = await fetch(
-                buildPath("api/sendresetpasswordemail"), 
+                bp.buildPath("api/sendresetpasswordemail"), 
                 {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
             );
 

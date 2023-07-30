@@ -2,11 +2,15 @@ import React from 'react';
 import Button from 'react-bootstrap/Button';
 
 function Account(){
+
+    var bp = require('./Path.js');
+
     var _ud = localStorage.getItem("user_data");
     var ud = JSON.parse(_ud);
     var firstName = ud.firstName;
     var lastName = ud.lastName;
     var email = ud.email;
+    /*
     const app_name = "budget-manager-group14-bacfc735e9a2";
     
     function buildPath(route)
@@ -22,6 +26,7 @@ function Account(){
         }
 
     }
+    */
 
     const doSendResetPasswordEmail = async event =>{
         event.preventDefault();
@@ -33,7 +38,7 @@ function Account(){
         try{
 
             const response = await fetch(
-                buildPath("api/sendresetpasswordemail"), 
+                bp.buildPath("api/sendresetpasswordemail"), 
                 {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
             );
 
