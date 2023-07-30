@@ -4,6 +4,9 @@ import Button from 'react-bootstrap/Button';
 
 function Login(){
 
+    var bp = require('./Path.js');
+
+    /*
     const app_name = "budget-manager-group14-bacfc735e9a2";
     function buildPath(route)
     {
@@ -18,6 +21,7 @@ function Login(){
         }
 
     }
+    */
 
     var loginEmail, loginPassword;
 
@@ -34,15 +38,17 @@ function Login(){
         try{
 
             const response = await fetch(
-                buildPath("api/login"), 
+                bp.buildPath("api/login"), 
                 {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
             );
 
             var res = JSON.parse(await response.text());
 
-            if(res.error !== ""){
+            alert(res.jwtToken);
+
+            if(res.error !== "" || res.error !== null){
                 
-                setMessage(res.error)
+                setMessage(res.error);
             
             }
 
