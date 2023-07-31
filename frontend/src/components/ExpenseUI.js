@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import Button from 'react-bootstrap/Button';
-import { useJwt } from 'react-jwt';
+import axios from 'axios';
 
 function ExpenseUI(){
 
@@ -53,6 +53,8 @@ function ExpenseUI(){
 
     const addExpense = async event =>{
 
+        alert(userdata._id);
+
         event.preventDefault();
 
         var storage = require('../tokenStorage.js');
@@ -61,17 +63,22 @@ function ExpenseUI(){
 
         let jsonObj = JSON.stringify(obj);
 
-        try{
+        var config =
+        {
+            method: 'post',
+            url: bp.buildPath('api/addexpense'),
+            headers:
+            {
+                'Content-Type': 'application/json'
+            },
+            data: jsonObj
+        };
 
-            const response = await fetch(
-                bp.buildPath("api/addexpense"),
-                {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
-            );
+        axios(config).then(async function (response){
 
-            let text = await response.text();
-            let res = JSON.parse(text);
+            let res = response.data;
 
-            if(res.error.length > 0){
+            if(res.error){
                 setMessage("API Error:" + res.error);
             }
             else{
@@ -79,10 +86,10 @@ function ExpenseUI(){
                 storage.storeToken( res.jwtToken );
             }
 
-        }
-        catch(e){
+        })
+        .catch(function(e){
             setMessage(e.toString());
-        }
+        });
 
     }
 
@@ -96,14 +103,19 @@ function ExpenseUI(){
     
         let jsonObj = JSON.stringify(obj);
 
-        try{
-            const response = await fetch(
-                bp.buildPath("api/searchexpense"),
-                {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
-            );
+        var config =
+        {
+            method: 'post',
+            url: bp.buildPath('api/searchexpense'),
+            headers:
+            {
+                'Content-Type': 'application/json'
+            },
+            data: jsonObj
+        };
 
-            let text = await response.text();
-            let res = JSON.parse(text);
+        axios(config).then(function (response){
+            let res = response.data;
             let _results = res.results;
             let resultList = [];
             for(var i = 0; i < _results.length; i++){
@@ -112,11 +124,11 @@ function ExpenseUI(){
             setResults("Search Complete.");
             storage.storeToken( res.jwtToken );
             setExpenseList(resultList);
-        }
-        catch(e){
+        })
+        .catch(function(e){
             alert(e.toString());
             setResults(e.toString());
-        }
+        });
 
     };
 
@@ -130,21 +142,34 @@ function ExpenseUI(){
     
             let jsonObj = JSON.stringify(obj);
 
-            try{
-                const response = await fetch(
-                    bp.buildPath("api/deleteexpense"),
-                    {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
-                );
+            var config =
+            {
+                method: 'post',
+                url: bp.buildPath('api/deleteexpense'),
+                headers:
+                {
+                    'Content-Type': 'application/json'
+                },
+                data: jsonObj
+            };
 
-                let text = await response.text();
+            axios(config).then(function (response){
+
+                var res = response.data;
+
+                if(res.error){
+
+                    setMessage(res.error);
+                
+                }
 
                 setDeleteList([]);
 
-            }
-            catch(e){
+            })
+            .catch(function(e){
                 alert(e.toString());
                 setResults(e.toString());
-            }
+            });
 
         });
 
@@ -156,7 +181,7 @@ function ExpenseUI(){
             <input type="text" id="searchName" placeholder="Name" ref={(c) => searchName = c}></input>
             <input type="text" id="searchCost" placeholder="Cost" ref={(c) => searchCost = c}></input>
             <input type="date" id="searchDate" ref={(c) => searchDate = c}></input>
-            <button type="button" id="searchExpenseButton" class="buttons" onClick={searchExpense}>Search</button>
+            <button type="button" id="searchExpenseButton" onClick={searchExpense}>Search</button>
             <br/>
             <span id="expenseSearchResult">{searchResults}</span>
             <Table id="expenseList">
@@ -184,7 +209,7 @@ function ExpenseUI(){
             <input type="text" id="expenseName" placeholder="Name" ref={(c) => expenseName = c}></input>
             <input type="number" id="expenseCost" placeholder="Cost" ref={(c) => expenseCost = c}></input>
             <input type="date" id="expenseDate" ref={(c) => expenseDate = c}></input>
-            <button type="button" id="addExpenseButton" class="buttons" onClick={addExpense}>Add</button>
+            <button type="button" id="addExpenseButton" onClick={addExpense}>Add</button>
             <br/>
             <span id="expenseAddResult">{message}</span>
             <br/>

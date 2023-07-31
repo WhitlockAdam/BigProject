@@ -37,17 +37,14 @@ if (process.env.NODE_ENV === 'production')
 
 require("dotenv").config();
 const url = process.env.MONGODB_URI;
-const MongoClient = require("mongodb").MongoClient;
-const client = new MongoClient(url);
-client.connect(console.log("connected"));
+const mongoose = require("mongoose");
+mongoose.connect(url).then(()=>console.log("Connected to database.")).catch(e=>console.log(e));
+
 
 app.listen(PORT);
 
-const sgMail = require('@sendgrid/mail');
-const { verify } = require('crypto');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 var api = require('./api.js');
-api.setApp(app, client);
+api.setApp(app, mongoose);
 
 /*
 app.post('/api/login', async (req, res, next) =>{
