@@ -53,8 +53,6 @@ function ExpenseUI(){
 
     const addExpense = async event =>{
 
-        alert(userdata._id);
-
         event.preventDefault();
 
         var storage = require('../tokenStorage.js');

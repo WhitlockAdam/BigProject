@@ -222,7 +222,7 @@ exports.setApp = function(app, client){
             console.log(e.message);
         }
 
-        const newExpense = new Expense({userId: userId, name: name, cost: cost, date: date});
+        const newExpense = new Expense({_id: new ObjectId(), userId: userId, name: name, cost: cost, date: date});
         
         try{
     
@@ -255,7 +255,6 @@ exports.setApp = function(app, client){
     app.post('/api/searchexpense', async (req, res, next) =>{
         var error = "";
         const { userId, queryName, queryCost, queryDate, jwtToken } = req.body;
-        console.log(queryDate);
         var token = require("./createJWT.js");
         try{
             if( token.isExpired(jwtToken)){
@@ -274,7 +273,7 @@ exports.setApp = function(app, client){
         //const db = client.db("BuccaneerBudgeting");
         //const results = await db.collection("Expenses").find({"userId":userId, "name":{$regex:_searchName+".*",$options:"i"}, "cost":{$regex:_searchCost+".*"}, "date":{$regex:_searchDate+".*"}}).toArray();
         //"name":{$regex:_search+".*",$options:"i"}
-        const results = Expense.find({"userId":userId, "name":{$regex:_searchName+".*",$options:"i"}, "cost":{$regex:_searchCost+".*"}, "date":{$regex:_searchDate+".*"}})
+        const results = await Expense.find({"userId":userId, "name":{$regex:_searchName+".*",$options:"i"}, "cost":{$regex:_searchCost+".*"}, "date":{$regex:_searchDate+".*"}});
         var _ret = [];
         for( var i=0; i<results.length; i++ )
         {
