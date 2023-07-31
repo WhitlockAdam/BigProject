@@ -3,9 +3,14 @@ import './App.css';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import ExpensePage from './pages/ExpensePage';
+import ActivatePage from './pages/ActivatePage';
+import AccountPage from './pages/AccountPage';
 import RegisterPage from './pages/RegisterPage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ResetPasswordPage from './pages/ResetPasswordPage';
+import SendResetPasswordEmail from './components/SendResetPasswordEmail';
+
 
 function App() {
   return (
@@ -15,6 +20,10 @@ function App() {
       <Route path="/login" index element={<LoginPage/>}/>
       <Route path="/expenses" index element={<ExpensePage/>}/>
       <Route path="/register" index element={<RegisterPage/>}/>
+      <Route path="/activate" index element={<ActivatePage/>}/>
+      <Route path="/account" index element={<AccountPage/>}/>
+      <Route path="/resetpassword" index element={<SendResetPasswordEmail/>}/>
+      <Route path="/resetpassword2" index element={<ResetPasswordPage/>}/>
     </Routes>
     </BrowserRouter>
   );

@@ -1,17 +1,17 @@
 import React from "react";
+import ResetPassword from "../components/ResetPassword";
 import NavigationBar from "../components/NavigationBar";
-import Login from "../components/Login";
 
-const LoginPage = () => 
+const ResetPasswordPage = () => 
 {
 
     return(
         <div>
             <NavigationBar/>
-            <Login/>
+            <ResetPassword/>
         </div>
     );
 
 };
 
-export default LoginPage;
+export default ResetPasswordPage;

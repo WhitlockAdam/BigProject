@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "react-bootstrap/esm/Button";
 
 function LoggedInName(){
 
@@ -19,7 +20,7 @@ function LoggedInName(){
     return(
         <div id="loggedInDiv">
             <span id="username">{firstName} {lastName}</span>
-            <button type="button" id="logoutButton" class="buttons" onClick={doLogout}>Log Out</button>
+            <Button style={{marginLeft: '.5rem'}} type="button" id="logoutButton" class="buttons" onClick={doLogout}>Log Out</Button>
         </div>
     );
 

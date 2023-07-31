@@ -1,14 +1,12 @@
 import React from 'react';
-import PageTitle from '../components/PageTitle';
-import LoggedInName from '../components/LoggedInName';
 import ExpenseUI from '../components/ExpenseUI';
+import NavigationBar from '../components/NavigationBar';
 
 const ExpensePage = () =>{
 
     return(
         <div>
-            <PageTitle/>
-            <LoggedInName/>
+            <NavigationBar/>
             <ExpenseUI/>
         </div>
     );
