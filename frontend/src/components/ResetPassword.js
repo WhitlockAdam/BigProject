@@ -25,7 +25,7 @@ function ResetPassword(){
             url: bp.buildPath('api/resetpassword'),
             headers:
             {
-                'Content-Type': 'application/activate'
+                'Content-Type': 'application/json'
             },
             data: jsonObj
         };

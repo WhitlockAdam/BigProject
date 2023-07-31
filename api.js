@@ -130,8 +130,59 @@ exports.setApp = function(app, client){
             else{
                 var code = generateVerificationCode();
                 //await db.collection("Users").findOneAndUpdate({email: email},{$set: {verificationCode: code}});
-                User.findOneAndUpdate({email: email},{$set: {verificationCode: code}});
+                await User.findOneAndUpdate({email: email},{$set: {verificationCode: code}});
                 SendPasswordResetEmail(email, code, "https://budget-manager-group14-bacfc735e9a2.herokuapp.com/activate");
+            }
+        }
+        else{
+            error = "Account not found.";
+        }
+        ret = {error: error};
+        res.status(200).json(ret);
+    });
+
+    app.post('/api/senddeleteaccountemail', async (req, res, next)=>{
+        var error = "", ret = {};
+        const{ email } = req.body;
+        //const db = client.db("BuccaneerBudgeting");
+        //var results = await db.collection("Users").find({email: email}).toArray();
+        var results = await User.find({email: email});
+        if(0 < results.length){
+            if(results.verified === false){
+                error = "Account not verified.";
+            }
+            else{
+                var code = generateVerificationCode();
+                //await db.collection("Users").findOneAndUpdate({email: email},{$set: {verificationCode: code}});
+                await User.findOneAndUpdate({email: email},{$set: {verificationCode: code}});
+                SendDeleteAccountEmail(email, code, "https://budget-manager-group14-bacfc735e9a2.herokuapp.com/deleteaccount");
+            }
+        }
+        else{
+            error = "Account not found.";
+        }
+        ret = {error: error};
+        res.status(200).json(ret);
+    });
+
+    app.post('/api/deleteaccount', async (req, res, next)=>{
+        var error = "", ret = {};
+        const{ email, verificationCode} = req.body;
+        //const db = client.db("BuccaneerBudgeting");
+        //var results = await db.collection("Users").find({email: email}).toArray();
+        var results = await User.find({email: email});
+        if(0 < results.length){
+            if(results[0].verified === false){
+                error = "Account not verified.";
+            }
+            else if(results[0].verificationCode === null){
+                error = "Deletion was not requested for this account.";
+            }
+            else if(results[0].verificationCode !== verificationCode){
+                error = "Incorrect verification code.";
+            }
+            else{
+                await User.findOneAndRemove({email: email, verificationCode: verificationCode});
             }
         }
         else{
@@ -305,7 +356,7 @@ exports.setApp = function(app, client){
         const { userId, query } = req.body;
         //const db = client.db("BuccaneerBudgeting");
         //await db.collection("Expenses").deleteOne({"userId": userId, "_id": new ObjectId(query)});
-        Expense.deleteOne({"userId": userId, "_id": new ObjectId(query)});
+        await Expense.deleteOne({"userId": userId, "_id": new ObjectId(query)});
         var ret = {error:''};
         res.status(200).json(ret);
     });
