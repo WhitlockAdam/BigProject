@@ -2,40 +2,32 @@ import React, { useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import Button from 'react-bootstrap/Button';
-import { useJwt } from 'react-jwt';
+import axios from 'axios';
+import './css/styles.css';
 
 function ExpenseUI(){
 
     var bp = require('./Path.js');
-    
-    /*
-    const app_name = "budget-manager-group14-bacfc735e9a2";
-    function buildPath(route)
-    {
-
-        if(process.env.NODE_ENV === "production")
-        {
-            return("https://" + app_name + ".herokuapp.com/" + route);
-        }
-        else
-        {
-            return "http://localhost:5000/" + route;
-        }
-
-    }
-    */
 
     var expenseName = "";
     
     var expenseCost = "";
 
-    var expenseDate = "";
+    var expenseMonth = "";
+
+    var expenseDay = "";
+    
+    var expenseYear = "";
 
     var searchName = "";
 
     var searchCost = "";
 
-    var searchDate = "";
+    var searchMonth = "";
+
+    var searchDay = "";
+
+    var searchYear = "";
 
     const [deleteList, setDeleteList] = useState([]);
 
@@ -57,21 +49,26 @@ function ExpenseUI(){
 
         var storage = require('../tokenStorage.js');
 
-        let obj = {userId:_id, name: expenseName.value, cost: expenseCost.value, date: expenseDate.value, jwtToken: storage.retrieveToken()};
+        let obj = {userId:_id, name: expenseName.value, cost: expenseCost.value, day: expenseDay.value, month: expenseMonth.value, year: expenseYear.value, jwtToken: storage.retrieveToken()};
 
         let jsonObj = JSON.stringify(obj);
 
-        try{
+        var config =
+        {
+            method: 'post',
+            url: bp.buildPath('api/addexpense'),
+            headers:
+            {
+                'Content-Type': 'application/json'
+            },
+            data: jsonObj
+        };
 
-            const response = await fetch(
-                bp.buildPath("api/addexpense"),
-                {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
-            );
+        axios(config).then(async function (response){
 
-            let text = await response.text();
-            let res = JSON.parse(text);
+            let res = response.data;
 
-            if(res.error.length > 0){
+            if(res.error){
                 setMessage("API Error:" + res.error);
             }
             else{
@@ -79,10 +76,10 @@ function ExpenseUI(){
                 storage.storeToken( res.jwtToken );
             }
 
-        }
-        catch(e){
+        })
+        .catch(function(e){
             setMessage(e.toString());
-        }
+        });
 
     }
 
@@ -92,31 +89,36 @@ function ExpenseUI(){
 
         var storage = require('../tokenStorage.js');
         
-        let obj = {userId: _id, queryName: searchName.value, queryCost: searchCost.value, queryDate: searchDate.value, jwtToken: storage.retrieveToken()};
+        let obj = {userId: _id, queryName: searchName.value, queryCost: searchCost.value, queryMonth: searchMonth.value, queryDay: searchDay.value, queryYear: searchYear.value, jwtToken: storage.retrieveToken()};
     
         let jsonObj = JSON.stringify(obj);
 
-        try{
-            const response = await fetch(
-                bp.buildPath("api/searchexpense"),
-                {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
-            );
+        var config =
+        {
+            method: 'post',
+            url: bp.buildPath('api/searchexpense'),
+            headers:
+            {
+                'Content-Type': 'application/json'
+            },
+            data: jsonObj
+        };
 
-            let text = await response.text();
-            let res = JSON.parse(text);
+        axios(config).then(function (response){
+            let res = response.data;
             let _results = res.results;
             let resultList = [];
             for(var i = 0; i < _results.length; i++){
-                resultList.push({name: _results[i].name, cost: _results[i].cost, date: _results[i].date, _id: _results[i]._id, selected: false});
+                resultList.push({name: _results[i].name, cost: _results[i].cost, date: `${_results[i].month.toString()}/${_results[i].day.toString()}/${_results[i].year.toString()}`, _id: _results[i]._id, selected: false});
             }
             setResults("Search Complete.");
             storage.storeToken( res.jwtToken );
             setExpenseList(resultList);
-        }
-        catch(e){
+        })
+        .catch(function(e){
             alert(e.toString());
             setResults(e.toString());
-        }
+        });
 
     };
 
@@ -130,21 +132,34 @@ function ExpenseUI(){
     
             let jsonObj = JSON.stringify(obj);
 
-            try{
-                const response = await fetch(
-                    bp.buildPath("api/deleteexpense"),
-                    {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
-                );
+            var config =
+            {
+                method: 'post',
+                url: bp.buildPath('api/deleteexpense'),
+                headers:
+                {
+                    'Content-Type': 'application/json'
+                },
+                data: jsonObj
+            };
 
-                let text = await response.text();
+            axios(config).then(function (response){
+
+                var res = response.data;
+
+                if(res.error){
+
+                    setMessage(res.error);
+                
+                }
 
                 setDeleteList([]);
 
-            }
-            catch(e){
+            })
+            .catch(function(e){
                 alert(e.toString());
                 setResults(e.toString());
-            }
+            });
 
         });
 
@@ -155,40 +170,46 @@ function ExpenseUI(){
             <br/>
             <input type="text" id="searchName" placeholder="Name" ref={(c) => searchName = c}></input>
             <input type="text" id="searchCost" placeholder="Cost" ref={(c) => searchCost = c}></input>
-            <input type="date" id="searchDate" ref={(c) => searchDate = c}></input>
-            <button type="button" id="searchExpenseButton" class="buttons" onClick={searchExpense}>Search</button>
+            <input type="text" id="searchMonth" placeholder="Month" ref={(c) => searchMonth = c}></input>
+            <input type="text" id="searchDay" placeholder="Day" ref={(c) => searchDay = c}></input>
+            <input type="text" id="searchYear" placeholder="Year" ref={(c) => searchYear = c}></input>
+            <Button className='custom-btn' type="button" id="searchExpenseButton" onClick={searchExpense}>Search</Button>
             <br/>
             <span id="expenseSearchResult">{searchResults}</span>
-            <Table id="expenseList">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Cost</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {expenseList.map((r) =>
-                        <tr key={r._id}>
-                            <td>{r.name}</td>
-                            <td>{r.cost}</td>
-                            <td>{r.date}</td>
-                            <td style={{visibility: 'hidden'}}>{r._id}</td>
-                            <td><ToggleButton className='mb-2' type="checkbox" variant="outline-primary" checked={r.bool} onClick={() => {deleteList.indexOf(r._id)===-1 ? setDeleteList((prev)=>[...prev, r._id]) : deleteList.splice(deleteList.indexOf(r._id), 1); setExpenseList(expenseList.map((element)=>element._id===r._id?{...element, bool: !element.bool} : {...element}));}}>Delete</ToggleButton></td>
+            <div className='form-wrapper'>
+                <Table id="expenseList" className='table'>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Cost</th>
+                            <th>Date</th>
                         </tr>
-                    )}
-                </tbody>
-            </Table>
+                    </thead>
+                    <tbody>
+                        {expenseList.map((r) =>
+                            <tr key={r._id}>
+                                <td>{r.name}</td>
+                                <td>{r.cost}</td>
+                                <td>{r.date}</td>
+                                <td style={{visibility: 'hidden'}}>{r._id}</td>
+                                <td><ToggleButton className='custom-btn delete-btn' type="checkbox" variant="outline-primary" checked={r.bool} onClick={() => {deleteList.indexOf(r._id)===-1 ? setDeleteList((prev)=>[...prev, r._id]) : deleteList.splice(deleteList.indexOf(r._id), 1); setExpenseList(expenseList.map((element)=>element._id===r._id?{...element, bool: !element.bool} : {...element}));}}>Delete</ToggleButton></td>
+                            </tr>
+                        )}
+                    </tbody>
+                </Table>
+            </div>
             <br/>
             <br/>
             <input type="text" id="expenseName" placeholder="Name" ref={(c) => expenseName = c}></input>
             <input type="number" id="expenseCost" placeholder="Cost" ref={(c) => expenseCost = c}></input>
-            <input type="date" id="expenseDate" ref={(c) => expenseDate = c}></input>
-            <button type="button" id="addExpenseButton" class="buttons" onClick={addExpense}>Add</button>
+            <input type="text" id="expenseMonth" placeholder="Month" ref={(c) => expenseMonth = c}></input>
+            <input type="text" id="expenseDay" placeholder="Day" ref={(c) => expenseDay = c}></input>
+            <input type="text" id="expenseYear" placeholder="Year" ref={(c) => expenseYear = c}></input>
+            <Button className='custom-btn' type="button" id="addExpenseButton" onClick={addExpense}>Add</Button>
             <br/>
             <span id="expenseAddResult">{message}</span>
             <br/>
-            <Button onClick={deleteExpense}>Delete</Button>
+            <Button className="custom-btn" onClick={deleteExpense}>Delete</Button>
         </div>
     );
     

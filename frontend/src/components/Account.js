@@ -1,5 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Button from 'react-bootstrap/Button';
+import axios from 'axios';
+import './css/styles.css';
 
 function Account(){
 
@@ -10,23 +12,7 @@ function Account(){
     var firstName = ud.firstName;
     var lastName = ud.lastName;
     var email = ud.email;
-    /*
-    const app_name = "budget-manager-group14-bacfc735e9a2";
-    
-    function buildPath(route)
-    {
-
-        if(process.env.NODE_ENV === "production")
-        {
-            return("https://" + app_name + ".herokuapp.com/" + route);
-        }
-        else
-        {
-            return "http://localhost:5000/" + route;
-        }
-
-    }
-    */
+    const [message, setMessage] = useState('');
 
     const doSendResetPasswordEmail = async event =>{
         event.preventDefault();
@@ -35,25 +21,81 @@ function Account(){
 
         var jsonObj = JSON.stringify(obj); 
 
-        try{
+        var config =
+        {
+            method: 'post',
+            url: bp.buildPath('api/sendresetpasswordemail'),
+            headers:
+            {
+                'Content-Type': 'application/json'
+            },
+            data: jsonObj
+        };
 
-            const response = await fetch(
-                bp.buildPath("api/sendresetpasswordemail"), 
-                {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
-            );
+        axios(config).then(async function (response){
 
-            var res = JSON.parse(await response.text());
+            var res = response.data;
 
-            window.location.href = "/resetpassword2";
+            if(res.error){
 
-        }
-        catch(e){
+                setMessage(res.error);
+            
+            }
+            else{
+
+                window.location.href = "/resetpassword2";
+            
+            }
+        })
+        .catch(function(e){
 
             alert(e.toString());
             
             return;
         
-        }
+        });
+    }
+
+    const doSendDeleteAccountEmail = async event =>{
+        event.preventDefault();
+
+        var obj = {email: email};
+
+        var jsonObj = JSON.stringify(obj); 
+
+        var config =
+        {
+            method: 'post',
+            url: bp.buildPath('api/senddeleteaccountemail'),
+            headers:
+            {
+                'Content-Type': 'application/json'
+            },
+            data: jsonObj
+        };
+
+        axios(config).then(async function (response){
+
+            var res = response.data;
+
+            if(res.error){
+
+                setMessage(res.error);
+            
+            }
+            else{
+
+                window.location.href = "/deleteaccount";
+            
+            }
+        })
+        .catch(function(e){
+
+            alert(e.toString());
+            
+            return;
+        
+        });
     }
 
     return(
@@ -66,7 +108,9 @@ function Account(){
             <Button onClick={doSendResetPasswordEmail}>Change Password</Button>
             <br/>
             <br/>
-            <Button>Delete Account</Button>
+            <Button onClick={doSendDeleteAccountEmail}>Delete Account</Button>
+            <br/>
+            <span id="messageSpan">{message}</span>
         </div>
     );
 }

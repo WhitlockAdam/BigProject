@@ -20,7 +20,7 @@ function LoggedInName(){
     return(
         <div id="loggedInDiv">
             <span id="username">{firstName} {lastName}</span>
-            <Button style={{marginLeft: '.5rem'}} type="button" id="logoutButton" class="buttons" onClick={doLogout}>Log Out</Button>
+            <Button style={{marginLeft: '.5rem'}} type="button" id="logoutButton" onClick={doLogout}>Log Out</Button>
         </div>
     );
 

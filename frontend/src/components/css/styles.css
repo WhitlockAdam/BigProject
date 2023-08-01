@@ -1,0 +1,41 @@
+.custom-btn {
+    background-color: #273A4B;
+    outline: 5px solid #AA9675;
+    color: white;
+    border-radius: 10px;
+    border: none;
+    padding: 5px;
+    text-align: center;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+    text-decoration: none;
+    display: inline-block;
+    font-size: 2em;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.custom-btn:hover {
+    background-color: #8B7A60;
+    outline: 5px solid #182631;
+}
+
+.custom-btn:active {
+    background-color: #8B7A60;
+    box-shadow: inset 0 0 10px black;
+    outline: 5px solid #182631;
+}
+
+.delete-btn {
+    background-color: #AA9675;
+    outline: 5px solid #273A4B;
+}
+
+.delete-btn:hover {
+    background-color: #8B7A60;
+    outline: 5px solid #182631;
+}
+
+.delete-btn:active {
+    background-color: #182631;
+    outline: 5px solid #AA9675;
+}

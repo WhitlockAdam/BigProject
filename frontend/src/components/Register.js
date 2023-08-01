@@ -1,27 +1,12 @@
 import React, {useState} from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import axios from 'axios';
+import './css/loginsignup.css';
 
 function Register(){
 
     var bp = require('./Path.js');
-
-    /*
-    const app_name = "budget-manager-group14-bacfc735e9a2";
-    function buildPath(route)
-    {
-
-        if(process.env.NODE_ENV === "production")
-        {
-            return("https://" + app_name + ".herokuapp.com/" + route);
-        }
-        else
-        {
-            return "http://localhost:5000/" + route;
-        }
-
-    }
-    */
 
     var registerEmail, registerFirstName, registerLastName, registerPassword;
 
@@ -35,16 +20,22 @@ function Register(){
 
         var jsonObj = JSON.stringify(obj); 
 
-        try{
+        var config =
+        {
+            method: 'post',
+            url: bp.buildPath('api/register'),
+            headers:
+            {
+                'Content-Type': 'application/json'
+            },
+            data: jsonObj
+        };
 
-            const response = await fetch(
-                bp.buildPath("api/register"), 
-                {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
-            );
+        axios(config).then(function (response){
 
-            var res = JSON.parse(await response.text());
+            var res = response.data;
 
-            if(res.error !== ""){
+            if(res.error){
                 
                 setMessage(res.error)
             
@@ -58,14 +49,14 @@ function Register(){
 
             }
 
-        }
-        catch(e){
+        })
+        .catch(function(e){
 
             alert(e.toString());
             
             return;
         
-        }
+        });
 
     };
 
@@ -73,22 +64,22 @@ function Register(){
         <div id="registerDiv">
             <Form onSubmit={doRegister}>
                 <Form.Group className="mb-3" controlId="registerForm.email">
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control type="email" placeholder="you@email.com" ref={(c) => registerEmail = c}/>
+                    <Form.Label className='form-label'>Email</Form.Label>
+                    <Form.Control className='form-control' type="email" placeholder="you@email.com" ref={(c) => registerEmail = c}/>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="registerForm.firstName">
-                    <Form.Label>First Name</Form.Label>
-                    <Form.Control type="text" placeholder="Jane" ref={(c) => registerFirstName = c}/>
+                    <Form.Label className='form-label'>First Name</Form.Label>
+                    <Form.Control className='form-control' type="text" placeholder="Jane" ref={(c) => registerFirstName = c}/>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="registerForm.lastName">
-                    <Form.Label>Last Name</Form.Label>
-                    <Form.Control type="text" placeholder="Doe" ref={(c) => registerLastName = c}/>
+                    <Form.Label className='form-label'>Last Name</Form.Label>
+                    <Form.Control className='form-control' type="text" placeholder="Doe" ref={(c) => registerLastName = c}/>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="registerForm.password">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="password" ref={(c) => registerPassword = c}/>
+                    <Form.Label className='form-label'>Password</Form.Label>
+                    <Form.Control className='form-control' type="password" placeholder="password" ref={(c) => registerPassword = c}/>
                 </Form.Group>
-                <Button type="submit">Submit</Button>
+                <Button type="submit" className='btn btn-primary'>Submit</Button>
             </Form>
             <span id="loginResult">{message}</span>
         </div>

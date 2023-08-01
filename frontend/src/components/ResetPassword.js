@@ -1,27 +1,12 @@
 import React, {useState} from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import axios from "axios";
+import './css/loginsignup.css';
 
 function ResetPassword(){
     
     var bp = require('./Path.js');
-
-    /*
-    const app_name = "budget-manager-group14-bacfc735e9a2";
-    function buildPath(route)
-    {
-
-        if(process.env.NODE_ENV === "production")
-        {
-            return("https://" + app_name + ".herokuapp.com/" + route);
-        }
-        else
-        {
-            return "http://localhost:5000/" + route;
-        }
-
-    }
-    */
 
     var email, verificationCode, newPassword;
 
@@ -35,16 +20,22 @@ function ResetPassword(){
 
         var jsonObj = JSON.stringify(obj); 
 
-        try{
+        var config =
+        {
+            method: 'post',
+            url: bp.buildPath('api/resetpassword'),
+            headers:
+            {
+                'Content-Type': 'application/json'
+            },
+            data: jsonObj
+        };
 
-            const response = await fetch(
-                bp.buildPath("api/resetpassword"), 
-                {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
-            );
+        axios(config).then(function (response){
 
-            var res = JSON.parse(await response.text());
+            var res = response.data;
 
-            if(res.error !== ""){
+            if(res.error){
                 
                 setMessage(res.error)
             
@@ -58,34 +49,32 @@ function ResetPassword(){
 
             }
 
-        }
-        catch(e){
+        })
+        .catch(function (e){
 
-            alert(e.toString());
-            
-            return;
+            console.log(e);
         
-        }
+        });
 
     };
 
     return( 
-    <div id="activateDiv">
+    <div id="resetPasswordDiv">
         <p>Check your email for a message containing a six digit code.</p>
         <Form onSubmit={doResetPassword}>
             <Form.Group className="mb-3" controlId="resetPasswordForm.email">
-                <Form.Label>Email</Form.Label>
-                <Form.Control type="email" placeholder="you@email.com" ref={(c) => email = c}/>
+                <Form.Label className='form-label'>Email</Form.Label>
+                <Form.Control type="email" className='form-control' placeholder="you@email.com" ref={(c) => email = c}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="resetPasswordForm.code">
-                <Form.Label>Verification Code</Form.Label>
-                <Form.Control type="text" placeholder="000000" ref={(c) => verificationCode = c}/>
+                <Form.Label className='form-label'>Verification Code</Form.Label>
+                <Form.Control type="text" className='form-control' placeholder="000000" ref={(c) => verificationCode = c}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="resetPasswordForm.newPassword">
-                <Form.Label>New Password</Form.Label>
-                <Form.Control type="password" placeholder="new password" ref={(c) => newPassword = c}/>
+                <Form.Label className='form-label'>New Password</Form.Label>
+                <Form.Control type="password" className='form-control' placeholder="new password" ref={(c) => newPassword = c}/>
             </Form.Group>
-            <Button type="submit">Submit</Button>
+            <Button className="btn btn-primary" type="submit">Submit</Button>
         </Form>
         <span id="resetPasswordResult">{message}</span>
     </div>
