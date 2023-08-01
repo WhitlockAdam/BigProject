@@ -39,7 +39,6 @@ exports.setApp = function(app, client){
         else{
             ret = {error: "Incorrect email or password."}
         }
-        console.log(ret);
         res.status(200).json(ret);
     });
     
