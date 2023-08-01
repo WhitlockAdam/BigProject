@@ -170,9 +170,9 @@ function ExpenseUI(){
             <br/>
             <input type="text" id="searchName" placeholder="Name" ref={(c) => searchName = c}></input>
             <input type="text" id="searchCost" placeholder="Cost" ref={(c) => searchCost = c}></input>
-            <input type="text" id="searchMonth" ref={(c) => searchMonth = c}></input>
-            <input type="text" id="searchDay" ref={(c) => searchDay = c}></input>
-            <input type="text" id="searchYear" ref={(c) => searchYear = c}></input>
+            <input type="text" id="searchMonth" placeholder="Month" ref={(c) => searchMonth = c}></input>
+            <input type="text" id="searchDay" placeholder="Day" ref={(c) => searchDay = c}></input>
+            <input type="text" id="searchYear" placeholder="Year" ref={(c) => searchYear = c}></input>
             <Button className='custom-btn' type="button" id="searchExpenseButton" onClick={searchExpense}>Search</Button>
             <br/>
             <span id="expenseSearchResult">{searchResults}</span>
@@ -202,9 +202,9 @@ function ExpenseUI(){
             <br/>
             <input type="text" id="expenseName" placeholder="Name" ref={(c) => expenseName = c}></input>
             <input type="number" id="expenseCost" placeholder="Cost" ref={(c) => expenseCost = c}></input>
-            <input type="text" id="expenseMonth" ref={(c) => expenseMonth = c}></input>
-            <input type="text" id="expenseDay" ref={(c) => expenseDay = c}></input>
-            <input type="text" id="expenseYear" ref={(c) => expenseYear = c}></input>
+            <input type="text" id="expenseMonth" placeholder="Month" ref={(c) => expenseMonth = c}></input>
+            <input type="text" id="expenseDay" placeholder="Day" ref={(c) => expenseDay = c}></input>
+            <input type="text" id="expenseYear" placeholder="Year" ref={(c) => expenseYear = c}></input>
             <Button className='custom-btn' type="button" id="addExpenseButton" onClick={addExpense}>Add</Button>
             <br/>
             <span id="expenseAddResult">{message}</span>
