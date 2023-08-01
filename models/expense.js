@@ -14,7 +14,13 @@ const ExpenseSchema = new Schema({
     cost: {
         type: String
     },
-    date: {
+    day: {
+        type: String
+    },
+    month: {
+        type: String
+    },
+    year: {
         type: String
     },
     

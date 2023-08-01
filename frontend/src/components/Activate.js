@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
+import './css/loginsignup.css';
 
 function Activate(){
     
@@ -63,14 +64,14 @@ function Activate(){
     <div id="activateDiv">
         <Form onSubmit={doActivation}>
             <Form.Group className="mb-3" controlId="activateForm.email">
-                <Form.Label>Email</Form.Label>
-                <Form.Control type="email" placeholder="you@email.com" ref={(c) => email = c}/>
+                <Form.Label className='form-label'>Email</Form.Label>
+                <Form.Control type="email" className='form-control' placeholder="you@email.com" ref={(c) => email = c}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="activateForm.code">
-                <Form.Label>Verification Code</Form.Label>
-                <Form.Control type="text" placeholder="000000" ref={(c) => verificationCode = c}/>
+                <Form.Label className='form-label'>Verification Code</Form.Label>
+                <Form.Control type="text" className='form-control' placeholder="000000" ref={(c) => verificationCode = c}/>
             </Form.Group>
-            <Button type="submit">Submit</Button>
+            <Button type="submit" className='btn btn-primary'>Submit</Button>
         </Form>
         <span id="verificationResult">{message}</span>
     </div>

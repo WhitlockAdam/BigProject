@@ -4,6 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import PageTitle from "./PageTitle";
 import LoggedInName from "./LoggedInName";
+import './css/NavigationBar.css'
 
 function DefaultNav(){
     return(
@@ -29,7 +30,7 @@ function LoggedInNav(){
 function NavigationBar(){
     return(
         <div>
-            <Navbar expand="lg" className="bg-body-tertiary">
+            <Navbar expand="lg" className="navbar-custom">
                 <Container>
                     <Navbar.Brand>
                         <PageTitle/>

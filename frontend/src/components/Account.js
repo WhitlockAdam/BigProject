@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
+import './css/styles.css';
 
 function Account(){
 

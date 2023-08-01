@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
+import './css/loginsignup.css';
 
 function SendResetPasswordEmail(){
     
@@ -63,10 +64,10 @@ function SendResetPasswordEmail(){
     <div id="activateDiv">
         <Form onSubmit={doSendResetPasswordEmail}>
             <Form.Group className="mb-3" controlId="resetPasswordForm.email">
-                <Form.Label>Email</Form.Label>
-                <Form.Control type="email" placeholder="you@email.com" ref={(c) => email = c}/>
+                <Form.Label className='form-label'>Email</Form.Label>
+                <Form.Control className='form-control' type="email" placeholder="you@email.com" ref={(c) => email = c}/>
             </Form.Group>
-            <Button type="submit">Submit</Button>
+            <Button type="submit" className="btn btn-primary">Submit</Button>
         </Form>
         <span id="resetPasswordResult">{message}</span>
     </div>

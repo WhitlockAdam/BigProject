@@ -11,8 +11,6 @@ exports.setApp = function(app, client){
 
         var error = "";
         const { email, password } = req.body;
-        //const db = client.db("BuccaneerBudgeting");
-        //const results = await db.collection("Users").find({email: email, password: password}).toArray();
         const results = await User.find({email: email, password: password});
         var id = -1;
         var firstName = '';
@@ -50,8 +48,6 @@ exports.setApp = function(app, client){
         var error = "";
         var ret = {};
         const { email, password, firstName, lastName } = req.body;
-        //const db = client.db("BuccaneerBudgeting");
-        //const emailCheck = await db.collection("Users").find({email: email}).toArray();
         const emailCheck = await User.find({email: email});
         if(0 < emailCheck.length){
             error = "This email is associated with an existing account.";
@@ -59,10 +55,8 @@ exports.setApp = function(app, client){
         }
         else{
             var code = generateVerificationCode();
-            //await db.collection("Users").insertOne({email: email, password: password, firstName: firstName, lastName: lastName, verificationCode: code, verified: false});
             const newUser = new User({_id: new ObjectId(), email: email, password: password, firstName: firstName, lastName: lastName, verificationCode: code, verified: false});
             newUser.save();
-
             const results = await User.find({email: email, verificationCode: code});//db.collection("Users").find({email: email}).toArray();
             if(0 < results.length){
                 _id = results[0]._id;
@@ -76,10 +70,7 @@ exports.setApp = function(app, client){
     app.post('/api/verify', async (req, res, next)=>{
         var error = "", ret = {};
         const { email, verificationCode } = req.body;
-        //const db = client.db("BuccaneerBudgeting");
-        //var results = await db.collection("Users").find({email: email, verificationCode: verificationCode}).toArray();
         const results = await User.find({email: email});
-        console.log(results);
         if(0 < results.length){
             await User.findOneAndUpdate({email: email, verificationCode: verificationCode},{$set: {verified: true, verificationCode: null}});
         }
@@ -93,8 +84,6 @@ exports.setApp = function(app, client){
     app.post('/api/resetpassword', async (req, res, next)=>{
         var error = "", ret = {};
         const{ email, verificationCode, newPassword} = req.body;
-        //const db = client.db("BuccaneerBudgeting");
-        //var results = await db.collection("Users").find({email: email}).toArray();
         const results = await User.find({email: email});
         if(0 < results.length){
             if(results[0].verified === false){
@@ -120,8 +109,6 @@ exports.setApp = function(app, client){
     app.post('/api/sendresetpasswordemail', async (req, res, next)=>{
         var error = "", ret = {};
         const{ email } = req.body;
-        //const db = client.db("BuccaneerBudgeting");
-        //var results = await db.collection("Users").find({email: email}).toArray();
         var results = await User.find({email: email});
         if(0 < results.length){
             if(results.verified === false){
@@ -129,7 +116,6 @@ exports.setApp = function(app, client){
             }
             else{
                 var code = generateVerificationCode();
-                //await db.collection("Users").findOneAndUpdate({email: email},{$set: {verificationCode: code}});
                 await User.findOneAndUpdate({email: email},{$set: {verificationCode: code}});
                 SendPasswordResetEmail(email, code, "https://budget-manager-group14-bacfc735e9a2.herokuapp.com/activate");
             }
@@ -144,8 +130,6 @@ exports.setApp = function(app, client){
     app.post('/api/senddeleteaccountemail', async (req, res, next)=>{
         var error = "", ret = {};
         const{ email } = req.body;
-        //const db = client.db("BuccaneerBudgeting");
-        //var results = await db.collection("Users").find({email: email}).toArray();
         var results = await User.find({email: email});
         if(0 < results.length){
             if(results.verified === false){
@@ -153,7 +137,6 @@ exports.setApp = function(app, client){
             }
             else{
                 var code = generateVerificationCode();
-                //await db.collection("Users").findOneAndUpdate({email: email},{$set: {verificationCode: code}});
                 await User.findOneAndUpdate({email: email},{$set: {verificationCode: code}});
                 SendDeleteAccountEmail(email, code, "https://budget-manager-group14-bacfc735e9a2.herokuapp.com/deleteaccount");
             }
@@ -168,8 +151,6 @@ exports.setApp = function(app, client){
     app.post('/api/deleteaccount', async (req, res, next)=>{
         var error = "", ret = {};
         const{ email, verificationCode} = req.body;
-        //const db = client.db("BuccaneerBudgeting");
-        //var results = await db.collection("Users").find({email: email}).toArray();
         var results = await User.find({email: email});
         if(0 < results.length){
             if(results[0].verified === false){
@@ -259,7 +240,7 @@ exports.setApp = function(app, client){
         var error = "";
         var token = require('./createJWT.js');
 
-        const {userId, name, cost, date, jwtToken} = req.body;
+        const {userId, name, cost, month, day, year, jwtToken} = req.body;
         
         try{
             if( token.isExpired(jwtToken)){
@@ -273,12 +254,9 @@ exports.setApp = function(app, client){
             console.log(e.message);
         }
 
-        const newExpense = new Expense({_id: new ObjectId(), userId: userId, name: name, cost: cost, date: date});
+        const newExpense = new Expense({_id: new ObjectId(), userId: userId, name: name, cost: cost, month: month, day: day, year: year});
         
         try{
-    
-            //const db = client.db("BuccaneerBudgeting");
-            //db.collection("Expenses").insertOne(newExpense);
     
             newExpense.save();
 
@@ -305,7 +283,7 @@ exports.setApp = function(app, client){
     
     app.post('/api/searchexpense', async (req, res, next) =>{
         var error = "";
-        const { userId, queryName, queryCost, queryDate, jwtToken } = req.body;
+        const { userId, queryName, queryCost, queryMonth, queryDay, queryYear, jwtToken } = req.body;
         var token = require("./createJWT.js");
         try{
             if( token.isExpired(jwtToken)){
@@ -320,22 +298,14 @@ exports.setApp = function(app, client){
         }
         var _searchName = queryName.trim();
         var _searchCost = queryCost.trim();
-        var _searchDate = queryDate.trim();
-        //const db = client.db("BuccaneerBudgeting");
-        //const results = await db.collection("Expenses").find({"userId":userId, "name":{$regex:_searchName+".*",$options:"i"}, "cost":{$regex:_searchCost+".*"}, "date":{$regex:_searchDate+".*"}}).toArray();
-        //"name":{$regex:_search+".*",$options:"i"}
-        const results = await Expense.find({"userId":userId, "name":{$regex:_searchName+".*",$options:"i"}, "cost":{$regex:_searchCost+".*"}, "date":{$regex:_searchDate+".*"}});
+        var _searchMonth = queryMonth.trim();
+        var _searchDay = queryDay.trim();
+        var _searchYear = queryYear.trim();
+        const results = await Expense.find({"userId":userId, "name":{$regex:_searchName+".*",$options:"i"}, "cost":{$regex:_searchCost+".*"}, "day":{$regex:_searchDay+".*"}, "month":{$regex:_searchMonth+".*"}, "year":{$regex:_searchYear+".*"}});
         var _ret = [];
         for( var i=0; i<results.length; i++ )
         {
-            _ret.push({name: results[i].name, cost: results[i].cost, date: results[i].date, _id: results[i]._id});
-            /*
-            var lowerFromList = results[i].name.toLocaleLowerCase();
-            if( lowerFromList.indexOf( _search ) >= 0 )
-            {
-                _ret.push({name: results[i].name, cost: results[i].cost, date: results[i].date, _id: results[i]._id});
-            }
-            */
+            _ret.push({name: results[i].name, cost: results[i].cost, day: results[i].day, month: results[i].month, year: results[i].year, _id: results[i]._id});
         }
 
         var refreshedToken = null;
@@ -354,8 +324,6 @@ exports.setApp = function(app, client){
     app.post('/api/deleteexpense', async (req, res, next) =>{
         var error = "";
         const { userId, query } = req.body;
-        //const db = client.db("BuccaneerBudgeting");
-        //await db.collection("Expenses").deleteOne({"userId": userId, "_id": new ObjectId(query)});
         await Expense.deleteOne({"userId": userId, "_id": new ObjectId(query)});
         var ret = {error:''};
         res.status(200).json(ret);

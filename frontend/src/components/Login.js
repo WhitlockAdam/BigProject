@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode'; 
+import './css/loginsignup.css';
 
 function Login(){
 
@@ -71,17 +72,17 @@ function Login(){
         <div id="loginDiv">
             <Form onSubmit={doLogin}>
                 <Form.Group className="mb-3" controlId="loginForm.email">
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control type="email" placeholder="you@email.com" ref={(c) => loginEmail = c}/>
+                    <Form.Label className='form-label'>Email</Form.Label>
+                    <Form.Control className='form-control' type="email" placeholder="you@email.com" ref={(c) => loginEmail = c}/>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="loginForm.password">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="password" ref={(c) => loginPassword = c}/>
+                    <Form.Label className='form-label'>Password</Form.Label>
+                    <Form.Control className='form-control' type="password" placeholder="password" ref={(c) => loginPassword = c}/>
                 </Form.Group>
-                <Button type="submit">Submit</Button>
+                <Button type="submit" className="btn btn-primary">Submit</Button>
             </Form>
             <br/>
-            <Button onClick={() => window.location.href = "/resetpassword"}>Reset Password</Button> 
+            <Button className="btn btn-primary" onClick={() => window.location.href = "/resetpassword"}>Reset Password</Button> 
             <br/>
             <span id="loginResult">{message}</span>
         </div>
