@@ -1,5 +1,5 @@
 import React from 'react';
-import Budgeting_Square_Sticker from '../images/Budgeting_Square_Sticker.png';
+import Budgeting_Square_Sticker from '../images/Budgeting_Square_Sticker_2.png';
 
 function LandingPageBackground(){
 
