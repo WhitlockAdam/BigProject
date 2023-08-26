@@ -1,5 +1,6 @@
 import {StyleSheet, View, Button, TextInput} from 'react-native';
 import { useState } from 'react';
+import axios from 'axios';
 
 
 
@@ -40,57 +41,59 @@ function Register({navigation})
         var obj = {email: registerEmail, password: registerPassword, firstName: registerFirstName, lastName: registerLastName};
 
         var jsonObj = JSON.stringify(obj); 
-        try{
+    var config =
+        {
+            method: 'post',
+            url: 'https://budget-manager-group14-bacfc735e9a2.herokuapp.com/api/register',
+            headers:
+            {
+                'Content-Type': 'application/json'
+            },
+            data: jsonObj
+        };
 
-            const response = await fetch(
-                'https://budget-manager-group14-bacfc735e9a2.herokuapp.com/api/register', 
-                {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
-            );
+        axios(config).then(function (response){
 
-            var res = JSON.parse(await response.text());
+            var res = response.data;
 
-            if(res.id <= 0){
+            if(res.error){
                 
-                setMessage("Failed to register.")
+                setMessage(res.error)
             
             }
 
             else{
-                
-                var user = {firstName:res.firstName, lastName:res.lastName, id:res.id};
-
-                //localStorage.setItem("user_data", JSON.stringify(user));
 
                 setMessage("");
 
-                navigation.navigate('Expenses');
+                navigation.navigate('Activate');
 
             }
 
-        }
-        catch(e){
+        })
+        .catch(function(e){
 
             alert(e.toString());
             
             return;
         
-        }
+        });
 
     };
 
     return(
             <View style = {styles.registerContainer}>
-            <TextInput style = {styles.textInput} placeholder='Email' onChangeText = {emailInputHandler} value = {registerEmail} color = "#f31282"/>
-            <TextInput style = {styles.textInput} placeholder='First Name' onChangeText = {firstNameInputHandler} value = {registerFirstName} color = "#f31282"/>
-            <TextInput style = {styles.textInput} placeholder='Last Name' onChangeText = {lastNameInputHandler} value = {registerLastName} color = "#f31282"/>
-            <TextInput style = {styles.textInput} placeholder='Password' onChangeText = {passwordInputHandler} value = {registerPassword} color = "#f31282"/>
+            <TextInput style = {styles.textInput} placeholder='Email' onChangeText = {emailInputHandler} value = {registerEmail} />
+            <TextInput style = {styles.textInput} placeholder='First Name' onChangeText = {firstNameInputHandler} value = {registerFirstName} />
+            <TextInput style = {styles.textInput} placeholder='Last Name' onChangeText = {lastNameInputHandler} value = {registerLastName} />
+            <TextInput style = {styles.textInput} placeholder='Password' onChangeText = {passwordInputHandler} value = {registerPassword} />
 
                 <View style = {styles.buttonContainer}>
                     <View style = {styles.button}>
-                        <Button title = "Cancel" onPress = {() => navigation.goBack(null)}  color = "#f31282"/>
+                        <Button title = "Cancel" onPress = {() => navigation.goBack(null)} />
                     </View>
                     <View style = {styles.button}>
-                        <Button title = "Register" color = "#f31282" onPress = {doRegister}/>
+                        <Button title = "Register"  onPress = {doRegister}/>
                     </View>
                 </View>
             </View>
@@ -106,13 +109,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 16,
-        backgroundColor: '#fff',
-        //backgroundColor: '#311b6b'
+        backgroundColor: '#273A4B',
     },
     textInput: {
         borderWidth: 1,
         //borderColor: '#e4d0ff',
-        //backgroundColor: '#e4d0ff',
+        backgroundColor: '#AA9675',
        // color: '#120438',
         borderRadius: 6,
         width: '100%',

@@ -1,39 +1,18 @@
-import { StyleSheet, Text, TextInput, View, Button} from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
-import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StyleSheet, TextInput, View, Button} from 'react-native';
+import { useState, useEffect } from 'react';
 import React from 'react';
-//import Register from '../components/Register'
+import axios from 'axios';
+import jwt_decode from 'jwt-decode'; 
+import * as SecureStore from 'expo-secure-store';
+
 function Login({navigation})
 {
-   // const [modalIsVisible, setModalIsVisible] = useState(false);
+    const storage = require('../tokenStorage.js');
+    //console.log(storage.storeToken());
     const [loginEmail, setLoginEmail] = useState('');
-    const [loginPassword, setLoginPassword] = useState('');
-   // const [pageDetector, setPageDectector] = useState(false);
-
-    /*function LoginInputHandler(loginEmail) {
-      setEnteredLoginText(loginEmail);
-      onChangeText = {LoginInputHandler
-        <TextInput style = {styles.textInput} placeholder='Login' value = {loginEmail} />
-        onPress={() => navigation.navigate('Expenses')}
-                //<Text>{message}</Text>
-                <TextInput style = {styles.textInput} placeholder='Login' ref={(c) => loginEmail = c} />
-          <TextInput style = {styles.textInput} placeholder='Password' ref={(c) => loginPassword = c}/>
-          <TextInput style = {styles.textInput} placeholder='Login' onChangeText= {(text => this.setState({loginEmail: text}))} value={this.state.loginEmail} />
-          <TextInput style = {styles.textInput} placeholder='Password' onChangeText= {(text => this.setState({loginPassword: text}))} value={this.state.loginPassword}/>
-
-          <Button title = "Register" onPress={startAddGoalHandler}/>
-          <Register visible = {modalIsVisible}  onCancel ={endAddGoalHandler}/>
-  };*/
-
-   /* function startAddGoalHandler(){
-      setModalIsVisible(true);
-    }
-  
-    function endAddGoalHandler(){
-      setModalIsVisible(false);
-    }*/
-  
+    const [loginPassword, setLoginPassword] = useState(''); 
+    const [ud, Setud] = useState('');
+    const [savedData, setSavedData] = useState('')
     function emailInputHandler(enteredLoginEmail)
     {
       setLoginEmail(enteredLoginEmail);
@@ -43,33 +22,6 @@ function Login({navigation})
     {
       setLoginPassword(enteredLoginPassword);
     }
-
-
-    function pageSwitcher()
-    {
-      setPageDectector(true);
-    }
-
-
-
-    const app_name = "budget-manager-group14-bacfc735e9a2";
-    function buildPath(route)
-    {
-
-        if(process.env.NODE_ENV === "production")
-        {
-            return("https://" + app_name + ".herokuapp.com/" + route);
-        }
-        else
-        {
-            "https://localhost:5000/" + route;
-        }
-        //return("https://" + app_name + ".herokuapp.com/" + route);
-
-    }
-
-    //var loginEmail, loginPassword;
-
     const[message, setMessage] = useState("");
 
     const doLogin = async event => {
@@ -77,46 +29,45 @@ function Login({navigation})
         event.preventDefault();
 
         var obj = {email: loginEmail, password: loginPassword};
-        //var obj = {email: 'test@gmail.com', password: 'test'};
 
         var jsonObj = JSON.stringify(obj); 
+        var config =
+        {
+            method: 'post',
+            url: 'https://budget-manager-group14-bacfc735e9a2.herokuapp.com/api/login',
+            headers:
+            {
+                'Content-Type': 'application/json'
+            },
+            data: jsonObj
+        };
 
-        try{
+        axios(config).then(function (response){
 
-            const response = await fetch(
-                //buildPath("api/login"), 
-                'https://budget-manager-group14-bacfc735e9a2.herokuapp.com/api/login',
-                {method:"POST", body:jsonObj, headers:{"Content-Type":"application/json"}}
-            );
+            var res = response.data;
 
-            var res = JSON.parse(await response.text());
-
-            if(res.id <= 0){
+            if(res.error){
                 
-                setMessage(res.error)
+                setMessage(res.error);
+            
             }
-
             else{
-                
-                var user = {firstName:res.firstName, lastName:res.lastName, id:res.id};
-
-                //slocalStorage.setItem("user_data", JSON.stringify(user));
-
+                storage.storeToken(res);
+                var jsonRes = JSON.stringify(res);
+                jsonRes = jwt_decode(jsonRes, {component: true});
+                var user = {firstName: jsonRes.firstName, lastName: jsonRes.lastName, _id: jsonRes._id, email: jsonRes.email};
                 setMessage("");
 
-                navigation.navigate('Expenses');
+                navigation.navigate('Expenses', {user: user});
 
             }
 
-        }
-        catch(e){
+        })
+        .catch(function (e){
 
-            alert(e.toString());
-            
-            return;
+            console.log(e);
         
-        }
-
+        });
     };
 
 
@@ -141,7 +92,7 @@ export default Login;
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: '#273A4B', 
       //alignItems: 'center',
       //justifyContent: 'center',
     },
@@ -157,8 +108,10 @@ const styles = StyleSheet.create({
       borderTopRightRadius: 20,
     },
     textInput: {
+      backgroundColor: '#AA9675',
       borderWidth: 1,
-      borderColor: '#cccccc',
+      //borderColor: '#cccccc',
+      borderColor: '#000000',
       width: '80%',
       marginRight: 8,
       padding: 8,
