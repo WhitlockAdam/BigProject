@@ -11,7 +11,7 @@ exports.setApp = function(app, client){
 
         var error = "";
         const { email, password } = req.body;
-        const results = await User.find({email: email, password: password});
+        const results = await User.find({email:email, password:password});
         var id = -1;
         var firstName = '';
         var lastName = '';
@@ -24,7 +24,7 @@ exports.setApp = function(app, client){
             verified = results[0].verified;
             if(!verified){
                 error = "Account not activated.";
-                ret = {error: error};
+                ret = {error:error};
             }
             else{
                 try{
@@ -32,12 +32,12 @@ exports.setApp = function(app, client){
                     ret = token.createToken(firstName, lastName, id, email);
                 }
                 catch(e){
-                    ret = {error: e.message};
+                    ret = {error:e.message};
                 }
             }
         }
         else{
-            ret = {error: "Incorrect email or password."}
+            ret = {error:"Incorrect email or password."}
         }
         res.status(200).json(ret);
     });
@@ -47,20 +47,20 @@ exports.setApp = function(app, client){
         var error = "";
         var ret = {};
         const { email, password, firstName, lastName } = req.body;
-        const emailCheck = await User.find({email: email});
+        const emailCheck = await User.find({email:email});
         if(0 < emailCheck.length){
             error = "This email is associated with an existing account.";
-            ret = {error: error};
+            ret = {error:error};
         }
         else{
             var code = generateVerificationCode();
-            const newUser = new User({_id: new ObjectId(), email: email, password: password, firstName: firstName, lastName: lastName, verificationCode: code, verified: false});
+            const newUser = new User({_id:new ObjectId(), email:email, password:password, firstName:firstName, lastName:lastName, verificationCode:code, verified:false});
             newUser.save();
-            const results = await User.find({email: email, verificationCode: code});//db.collection("Users").find({email: email}).toArray();
+            const results = await User.find({email:email, verificationCode:code});//db.collection("Users").find({email:email}).toArray();
             if(0 < results.length){
                 _id = results[0]._id;
             }
-            ret = {error: ""};
+            ret = {error:""};
             sendVerificationEmail(email, firstName, code, "https://budget-manager-group14-bacfc735e9a2.herokuapp.com/activate");
         }
         res.status(200).json(ret);
@@ -69,21 +69,21 @@ exports.setApp = function(app, client){
     app.post('/api/verify', async (req, res, next)=>{
         var error = "", ret = {};
         const { email, verificationCode } = req.body;
-        const results = await User.find({email: email});
+        const results = await User.find({email:email});
         if(0 < results.length){
-            await User.findOneAndUpdate({email: email, verificationCode: verificationCode},{$set: {verified: true, verificationCode: null}});
+            await User.findOneAndUpdate({email:email, verificationCode:verificationCode},{$set:{verified:true, verificationCode:null}});
         }
         else{
             error = "error";
         }
-        ret = {error: error};
+        ret = {error:error};
         res.status(200).json(ret);
     });
     
     app.post('/api/resetpassword', async (req, res, next)=>{
         var error = "", ret = {};
         const{ email, verificationCode, newPassword} = req.body;
-        const results = await User.find({email: email});
+        const results = await User.find({email:email});
         if(0 < results.length){
             if(results[0].verified === false){
                 error = "Account not verified.";
@@ -95,62 +95,62 @@ exports.setApp = function(app, client){
                 error = "Incorrect verification code.";
             }
             else{
-                await User.findOneAndUpdate({email: email, verificationCode: verificationCode},{$set: {password: newPassword, verificationCode: null}});
+                await User.findOneAndUpdate({email:email, verificationCode:verificationCode},{$set:{password:newPassword, verificationCode:null}});
             }
         }
         else{
             error = "Account not found.";
         }
-        ret = {error: error};
+        ret = {error:error};
         res.status(200).json(ret);
     });
     
     app.post('/api/sendresetpasswordemail', async (req, res, next)=>{
         var error = "", ret = {};
         const{ email } = req.body;
-        var results = await User.find({email: email});
+        var results = await User.find({email:email});
         if(0 < results.length){
             if(results.verified === false){
                 error = "Account not verified.";
             }
             else{
                 var code = generateVerificationCode();
-                await User.findOneAndUpdate({email: email},{$set: {verificationCode: code}});
+                await User.findOneAndUpdate({email:email},{$set:{verificationCode:code}});
                 SendPasswordResetEmail(email, code, "https://budget-manager-group14-bacfc735e9a2.herokuapp.com/activate");
             }
         }
         else{
             error = "Account not found.";
         }
-        ret = {error: error};
+        ret = {error:error};
         res.status(200).json(ret);
     });
 
     app.post('/api/senddeleteaccountemail', async (req, res, next)=>{
         var error = "", ret = {};
         const{ email } = req.body;
-        var results = await User.find({email: email});
+        var results = await User.find({email:email});
         if(0 < results.length){
             if(results.verified === false){
                 error = "Account not verified.";
             }
             else{
                 var code = generateVerificationCode();
-                await User.findOneAndUpdate({email: email},{$set: {verificationCode: code}});
+                await User.findOneAndUpdate({email:email},{$set:{verificationCode:code}});
                 SendDeleteAccountEmail(email, code, "https://budget-manager-group14-bacfc735e9a2.herokuapp.com/deleteaccount");
             }
         }
         else{
             error = "Account not found.";
         }
-        ret = {error: error};
+        ret = {error:error};
         res.status(200).json(ret);
     });
 
     app.post('/api/deleteaccount', async (req, res, next)=>{
         var error = "", ret = {};
         const{ email, verificationCode} = req.body;
-        var results = await User.find({email: email});
+        var results = await User.find({email:email});
         if(0 < results.length){
             if(results[0].verified === false){
                 error = "Account not verified.";
@@ -162,13 +162,13 @@ exports.setApp = function(app, client){
                 error = "Incorrect verification code.";
             }
             else{
-                await User.findOneAndRemove({email: email, verificationCode: verificationCode});
+                await User.findOneAndRemove({email:email, verificationCode:verificationCode});
             }
         }
         else{
             error = "Account not found.";
         }
-        ret = {error: error};
+        ret = {error:error};
         res.status(200).json(ret);
     });
     
@@ -182,11 +182,11 @@ exports.setApp = function(app, client){
     
     function sendVerificationEmail(recipient, name, verificationCode, link){
         const msg = {
-            to: recipient, // Change to your recipient
-            from: 'buccaneerbudgeting@gmail.com', // Change to your verified sender
-            subject: 'Verify Your Account',
-            dynamic_template_data: {"name": name, "verificationCode": verificationCode, "link": link},
-            template_id: "d-f20d776f08db4cc1a061aa08a55e2bc2"
+            to:recipient, // Change to your recipient
+            from:'buccaneerbudgeting@gmail.com', // Change to your verified sender
+            subject:'Verify Your Account',
+            dynamic_template_data:{"name":name, "verificationCode":verificationCode, "link":link},
+            template_id:"d-f20d776f08db4cc1a061aa08a55e2bc2"
         }
         sgMail
         .send(msg)
@@ -200,11 +200,11 @@ exports.setApp = function(app, client){
     
     function SendPasswordResetEmail(recipient, verificationCode, link){
         const msg = {
-            to: recipient, // Change to your recipient
-            from: 'buccaneerbudgeting@gmail.com', // Change to your verified sender
-            subject: 'Reset Your Password',
-            dynamic_template_data: {"verificationCode": verificationCode, "link": link},
-            template_id: "d-094b22ab526c4aa9b18825d7f5010316"
+            to:recipient, // Change to your recipient
+            from:'buccaneerbudgeting@gmail.com', // Change to your verified sender
+            subject:'Reset Your Password',
+            dynamic_template_data:{"verificationCode":verificationCode, "link":link},
+            template_id:"d-094b22ab526c4aa9b18825d7f5010316"
         }
         sgMail
         .send(msg)
@@ -218,11 +218,11 @@ exports.setApp = function(app, client){
     
     function SendDeleteAccountEmail(recipient, verificationCode, link){
         const msg = {
-            to: recipient, // Change to your recipient
-            from: 'buccaneerbudgeting@gmail.com', // Change to your verified sender
-            subject: 'Reset Your Password',
-            dynamic_template_data: {"verificationCode": verificationCode, "link": link},
-            template_id: "d-b2a5ded862584d3b9dfcf3aac7cabdf2"
+            to:recipient, // Change to your recipient
+            from:'buccaneerbudgeting@gmail.com', // Change to your verified sender
+            subject:'Reset Your Password',
+            dynamic_template_data:{"verificationCode":verificationCode, "link":link},
+            template_id:"d-b2a5ded862584d3b9dfcf3aac7cabdf2"
         }
         sgMail
         .send(msg)
@@ -243,7 +243,7 @@ exports.setApp = function(app, client){
         
         try{
             if( token.isExpired(jwtToken)){
-                var r = {error:'The JWT is no longer valid', jwtToken: ''};
+                var r = {error:'The JWT is no longer valid', jwtToken:''};
                 res.status(200).json(r);
                 return;
             }
@@ -253,7 +253,7 @@ exports.setApp = function(app, client){
             console.log(e.message);
         }
 
-        const newExpense = new Expense({_id: new ObjectId(), userId: userId, name: name, cost: cost, month: month, day: day, year: year});
+        const newExpense = new Expense({_id:new ObjectId(), userId:userId, name:name, cost:cost, month:month, day:day, year:year});
         
         try{
     
@@ -274,7 +274,7 @@ exports.setApp = function(app, client){
             console.log(e.message);
         }
     
-        var ret = {error: error, jwtToken: refreshedToken};
+        var ret = {error:error, jwtToken:refreshedToken};
     
         res.status(200).json(ret);
     
@@ -286,7 +286,7 @@ exports.setApp = function(app, client){
         var token = require("./createJWT.js");
         try{
             if( token.isExpired(jwtToken)){
-                var r = {error:'The JWT is no longer valid', jwtToken: ''};
+                var r = {error:'The JWT is no longer valid', jwtToken:''};
                 res.status(200).json(r);
                 return;
             }
@@ -304,7 +304,7 @@ exports.setApp = function(app, client){
         var _ret = [];
         for( var i=0; i<results.length; i++ )
         {
-            _ret.push({name: results[i].name, cost: results[i].cost, day: results[i].day, month: results[i].month, year: results[i].year, _id: results[i]._id});
+            _ret.push({name:results[i].name, cost:results[i].cost, day:results[i].day, month:results[i].month, year:results[i].year, _id:results[i]._id});
         }
 
         var refreshedToken = null;
@@ -316,14 +316,14 @@ exports.setApp = function(app, client){
             console.log(e.message);
         }
 
-        var ret = {results:_ret, error:'', jwtToken: refreshedToken};
+        var ret = {results:_ret, error:'', jwtToken:refreshedToken};
         res.status(200).json(ret);
     });
     
     app.post('/api/deleteexpense', async (req, res, next) =>{
         var error = "";
         const { userId, query } = req.body;
-        await Expense.deleteOne({"userId": userId, "_id": new ObjectId(query)});
+        await Expense.deleteOne({"userId":userId, "_id":new ObjectId(query)});
         var ret = {error:''};
         res.status(200).json(ret);
     });
